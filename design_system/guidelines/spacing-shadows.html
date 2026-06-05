@@ -1,0 +1,16 @@
+<!-- @dsCard group="Spacing" viewport="700x180" name="Elevation & shadows" subtitle="Warm ink-tinted, soft. Coral glow for primary actions." -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;padding:22px;background:var(--surface-sunken);font-family:var(--font-sans);display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+  .c{display:flex;flex-direction:column;align-items:center;gap:9px}
+  .box{width:96px;height:62px;background:var(--white);border-radius:var(--radius-lg);display:grid;place-items:center;font-size:11px;color:var(--text-muted);font-weight:600}
+  .nm{font-family:var(--font-mono);font-size:10px;color:var(--text-subtle)}
+  .glow{background:var(--primary);color:#fff}
+</style></head>
+<body>
+  <div class="c"><div class="box" style="box-shadow:var(--shadow-xs)">xs</div><span class="nm">--shadow-xs</span></div>
+  <div class="c"><div class="box" style="box-shadow:var(--shadow-sm)">sm</div><span class="nm">--shadow-sm</span></div>
+  <div class="c"><div class="box" style="box-shadow:var(--shadow-md)">md · card</div><span class="nm">--shadow-md</span></div>
+  <div class="c"><div class="box" style="box-shadow:var(--shadow-lg)">lg · sheet</div><span class="nm">--shadow-lg</span></div>
+  <div class="c"><div class="box glow" style="box-shadow:var(--shadow-primary)">primary</div><span class="nm">--shadow-primary</span></div>
+</body></html>

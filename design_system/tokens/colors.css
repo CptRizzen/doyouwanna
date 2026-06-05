@@ -1,0 +1,123 @@
+/* ============================================================
+   Do You Wanna — Color System
+   Warm, sunny, social. Coral + amber on warm near-black ink.
+   Base ramps first, then semantic aliases, then circle colors.
+   ============================================================ */
+
+:root {
+  /* ---- Coral (primary / brand) ---------------------------- */
+  --coral-50:  #FFF1ED;
+  --coral-100: #FFE0D5;
+  --coral-200: #FFC2AD;
+  --coral-300: #FF9D80;
+  --coral-400: #FF7855;
+  --coral-500: #FF5A3C;   /* PRIMARY */
+  --coral-600: #ED401E;
+  --coral-700: #C22E13;
+  --coral-800: #8F2410;
+  --coral-900: #5C1A0E;
+
+  /* ---- Amber (secondary / accent / energy) ---------------- */
+  --amber-50:  #FFF8E8;
+  --amber-100: #FFEFC4;
+  --amber-200: #FFE08A;
+  --amber-300: #FFD04D;
+  --amber-400: #FFC23C;   /* ACCENT */
+  --amber-500: #F5A800;
+  --amber-600: #CC8500;
+  --amber-700: #946000;
+
+  /* ---- Ink (warm neutral ramp) ---------------------------- */
+  --ink-900: #17140F;   /* strongest text / dark surface */
+  --ink-800: #241F18;
+  --ink-700: #3A332A;
+  --ink-600: #564E42;
+  --ink-500: #79705F;
+  --ink-400: #A99E8C;
+  --ink-300: #D2C9BA;
+  --ink-200: #E7E0D5;
+  --ink-100: #F2ECE2;
+  --ink-50:  #FAF6EF;
+  --paper:   #FFFBF5;   /* warm page background */
+  --white:   #FFFFFF;
+
+  /* ---- Status ramps --------------------------------------- */
+  --green-100: #D6F5E6;
+  --green-400: #34D399;
+  --green-500: #1FA971;   /* success / "on my way" / live */
+  --green-600: #157C53;
+
+  --red-100: #FCDAD7;
+  --red-500: #E0322B;     /* danger / block / report */
+  --red-600: #B91E18;
+
+  --sky-100: #DCEEFF;
+  --sky-500: #3B9EFF;     /* info / links / map routes */
+  --sky-600: #1E7BD6;
+
+  /* ============================================================
+     SEMANTIC ALIASES — reference these in product code
+     ============================================================ */
+
+  /* Brand */
+  --primary:        var(--coral-500);
+  --primary-hover:  var(--coral-600);
+  --primary-press:  var(--coral-700);
+  --primary-soft:   var(--coral-100);
+  --primary-tint:   var(--coral-50);
+  --on-primary:     var(--white);
+  --accent:         var(--amber-400);
+  --accent-strong:  var(--amber-500);
+
+  /* Text */
+  --text-strong:    var(--ink-900);
+  --text-body:      var(--ink-800);
+  --text-muted:     var(--ink-500);
+  --text-subtle:    var(--ink-400);
+  --text-on-dark:   var(--ink-50);
+  --text-on-primary:var(--white);
+  --text-link:      var(--coral-600);
+
+  /* Surfaces */
+  --surface-page:   var(--paper);
+  --surface-card:   var(--white);
+  --surface-sunken: var(--ink-50);
+  --surface-raised: var(--white);
+  --surface-dark:   var(--ink-900);
+  --surface-dark-2: var(--ink-800);
+  --overlay-scrim:  rgba(23, 20, 15, 0.55);
+
+  /* Borders / lines */
+  --border-subtle:  var(--ink-200);
+  --border-default: var(--ink-300);
+  --border-strong:  var(--ink-400);
+  --divider:        var(--ink-100);
+
+  /* Status semantics */
+  --success:        var(--green-500);
+  --success-soft:   var(--green-100);
+  --danger:         var(--red-500);
+  --danger-soft:    var(--red-100);
+  --warning:        var(--amber-500);
+  --warning-soft:   var(--amber-100);
+  --info:           var(--sky-500);
+  --info-soft:      var(--sky-100);
+  --live:           var(--green-500);
+
+  /* Focus */
+  --focus-ring:     rgba(255, 90, 60, 0.45);
+
+  /* ============================================================
+     CIRCLE COLORS — categorical hues for user friend circles.
+     Each circle picks one. Designed to stay legible on white
+     and to read as a filled "dot" or avatar ring.
+     ============================================================ */
+  --circle-coral:  #FF5A3C;
+  --circle-amber:  #FFB020;
+  --circle-lime:   #7FB800;
+  --circle-teal:   #14B8A6;
+  --circle-sky:    #3B9EFF;
+  --circle-grape:  #8B5CF6;
+  --circle-rose:   #FF5FA2;
+  --circle-clay:   #C2734A;
+}

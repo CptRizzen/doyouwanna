@@ -1,0 +1,26 @@
+<!-- @dsCard group="Colors" viewport="700x170" name="Circle colors" subtitle="Categorical hues users assign to friend circles — dots, rings, pins." -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;padding:18px 20px;background:var(--surface-card);font-family:var(--font-sans)}
+  .grid{display:grid;grid-template-columns:repeat(8,1fr);gap:12px}
+  .c{display:flex;flex-direction:column;align-items:center;gap:7px}
+  .dot{width:46px;height:46px;border-radius:50%;box-shadow:var(--shadow-sm)}
+  .ring{width:46px;height:46px;border-radius:50%;background:var(--ink-100);border:3px solid;display:grid;place-items:center}
+  .ring span{width:20px;height:20px;border-radius:50%;background:var(--ink-300)}
+  .nm{font-size:11px;font-weight:600;color:var(--text-body)}
+  .hx{font-family:var(--font-mono);font-size:9px;color:var(--text-subtle)}
+  .lab{font-size:11px;color:var(--text-muted);margin-bottom:10px}
+</style></head>
+<body>
+  <div class="lab">Each circle is tagged with one hue. Used as fill (dot/pin) and as avatar ring (border).</div>
+  <div class="grid">
+    <div class="c"><div class="dot" style="background:var(--circle-coral)"></div><div class="nm">Coral</div><div class="hx">FF5A3C</div></div>
+    <div class="c"><div class="dot" style="background:var(--circle-amber)"></div><div class="nm">Amber</div><div class="hx">FFB020</div></div>
+    <div class="c"><div class="dot" style="background:var(--circle-lime)"></div><div class="nm">Lime</div><div class="hx">7FB800</div></div>
+    <div class="c"><div class="dot" style="background:var(--circle-teal)"></div><div class="nm">Teal</div><div class="hx">14B8A6</div></div>
+    <div class="c"><div class="dot" style="background:var(--circle-sky)"></div><div class="nm">Sky</div><div class="hx">3B9EFF</div></div>
+    <div class="c"><div class="dot" style="background:var(--circle-grape)"></div><div class="nm">Grape</div><div class="hx">8B5CF6</div></div>
+    <div class="c"><div class="dot" style="background:var(--circle-rose)"></div><div class="nm">Rose</div><div class="hx">FF5FA2</div></div>
+    <div class="c"><div class="dot" style="background:var(--circle-clay)"></div><div class="nm">Clay</div><div class="hx">C2734A</div></div>
+  </div>
+</body></html>

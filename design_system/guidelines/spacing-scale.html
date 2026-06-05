@@ -1,0 +1,28 @@
+<!-- @dsCard group="Spacing" viewport="700x170" name="Spacing scale" subtitle="4px base grid. --space-1 → --space-20." -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;padding:18px 22px;background:var(--surface-card);font-family:var(--font-sans)}
+  .row{display:flex;align-items:flex-end;gap:10px}
+  .c{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .bar{background:var(--coral-400);border-radius:3px;width:100%}
+  .b{width:46px;display:flex;flex-direction:column;align-items:center}
+  .tok{font-family:var(--font-mono);font-size:9px;color:var(--text-subtle)}
+  .px{font-size:11px;font-weight:700;color:var(--text-strong)}
+  .note{margin-top:14px;font-size:11px;color:var(--text-muted)}
+  .note b{color:var(--text-strong)}
+</style></head>
+<body>
+  <div class="row">
+    <div class="b"><div class="bar" style="height:4px"></div><span class="px">4</span><span class="tok">1</span></div>
+    <div class="b"><div class="bar" style="height:8px"></div><span class="px">8</span><span class="tok">2</span></div>
+    <div class="b"><div class="bar" style="height:12px"></div><span class="px">12</span><span class="tok">3</span></div>
+    <div class="b"><div class="bar" style="height:16px"></div><span class="px">16</span><span class="tok">4</span></div>
+    <div class="b"><div class="bar" style="height:20px"></div><span class="px">20</span><span class="tok">5</span></div>
+    <div class="b"><div class="bar" style="height:24px"></div><span class="px">24</span><span class="tok">6</span></div>
+    <div class="b"><div class="bar" style="height:32px"></div><span class="px">32</span><span class="tok">8</span></div>
+    <div class="b"><div class="bar" style="height:40px"></div><span class="px">40</span><span class="tok">10</span></div>
+    <div class="b"><div class="bar" style="height:48px"></div><span class="px">48</span><span class="tok">12</span></div>
+    <div class="b"><div class="bar" style="height:64px"></div><span class="px">64</span><span class="tok">16</span></div>
+  </div>
+  <div class="note"><b>--screen-pad 20</b> default gutter · <b>--section-gap 28</b> between feed sections · <b>--tap-min 44</b> touch target</div>
+</body></html>

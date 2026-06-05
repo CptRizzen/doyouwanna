@@ -1,0 +1,59 @@
+<!-- @dsCard group="Components" viewport="700x520" name="App — event card, tab bar, RSVP bar" subtitle="The signature composites: hero/row event cards, bottom nav, RSVP bar." -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<style>
+  body{margin:0;padding:22px;background:var(--surface-sunken);font-family:var(--font-sans)}
+  .wrap{display:grid;grid-template-columns:300px 1fr;gap:24px;align-items:start}
+  .col{display:flex;flex-direction:column;gap:14px}
+  .lab{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-subtle);margin-bottom:8px;display:block}
+  .frame{background:var(--surface-page);border-radius:var(--radius-xl);overflow:hidden;border:1px solid var(--border-subtle);box-shadow:var(--shadow-sm)}
+</style>
+<script src="https://unpkg.com/lucide@0.456.0/dist/umd/lucide.min.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+  const { EventCard, TabBar, RSVPBar } = window.DoYouWannaDesignSystem_3f6d35;
+  const { useState } = React;
+  const P=(n,g='women')=>`https://randomuser.me/api/portraits/${g}/${n}.jpg`;
+  const crew=[{src:P(44),name:'Maya'},{src:P(32,'men'),name:'Theo'},{src:P(68),name:'Ana'},{src:P(15,'men'),name:'Sam'},{src:P(21),name:'Joy'}];
+  const IMG='https://images.unsplash.com/photo-1551632811-561732d1e306?w=640&q=70&auto=format';
+  const IMG2='https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=70&auto=format';
+  function Demo(){
+    const [tab,setTab]=useState('map');
+    const [state,setState]=useState('going');
+    const [way,setWay]=useState(false);
+    return (
+      <div className="wrap">
+        <div className="col">
+          <span className="lab">Event card · hero</span>
+          <EventCard image={IMG} title="Sunrise at Eagle Peak" time="Saturday · 7:00 AM"
+            circle={{name:'Hiking Crew',color:'var(--circle-lime)'}} going={crew} goingTotal={9} distance="2.4 km"/>
+        </div>
+        <div className="col">
+          <span className="lab">Event card · row</span>
+          <EventCard layout="row" image={IMG2} title="Bar Trivia Night" time="Thu 7:30 PM"
+            circle={{name:'Trivia Gang',color:'var(--circle-grape)'}} going={crew} goingTotal={6} distance="1.1 km" live/>
+          <EventCard layout="row" title="Brunch at Rosa's" time="Sun 11:00"
+            circle={{name:'Brunch Club',color:'var(--circle-amber)'}} going={crew.slice(0,3)} goingTotal={4}/>
+          <span className="lab" style={{marginTop:8}}>RSVP bar</span>
+          <div className="frame"><RSVPBar state={state} onRSVP={setState} onWay={way} onMyWay={()=>setWay(!way)}/></div>
+          <span className="lab" style={{marginTop:8}}>Tab bar</span>
+          <div className="frame"><TabBar active={tab} onChange={setTab} items={[
+            {key:'home',icon:'house',label:'Home'},
+            {key:'circles',icon:'users-round',label:'Circles',badge:2},
+            {key:'create',icon:'plus',label:'Plan'},
+            {key:'map',icon:'map',label:'Nearby'},
+            {key:'me',icon:'user-round',label:'You'},
+          ]}/></div>
+        </div>
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+</script>
+</body></html>

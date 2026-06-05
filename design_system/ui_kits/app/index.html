@@ -1,0 +1,737 @@
+<!-- @dsCard group="App" viewport="460x690" name="Do You Wanna — app" subtitle="Interactive Friend Circles flow: home, circles, plans, live map, profile." -->
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Do You Wanna — App</title>
+<link rel="stylesheet" href="../../styles.css">
+<style>
+  html,body{margin:0;height:100%}
+  body{
+    display:flex;align-items:center;justify-content:center;min-height:100vh;
+    background:
+      radial-gradient(120% 90% at 20% 0%, #FFE9DF 0%, rgba(255,233,223,0) 55%),
+      radial-gradient(110% 80% at 90% 100%, #FFF1C9 0%, rgba(255,241,201,0) 50%),
+      var(--ink-50);
+    font-family:var(--font-sans);padding:24px;box-sizing:border-box;
+  }
+  #root{filter:drop-shadow(0 30px 60px rgba(23,20,15,0.22))}
+</style>
+<script src="https://unpkg.com/lucide@0.456.0/dist/umd/lucide.min.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+// Slim iOS frame (bezel + status bar + dynamic island + home indicator)
+function IOSStatusBar(){
+  return (
+    <div style={{position:'absolute',top:0,left:0,right:0,height:54,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 30px',zIndex:30,pointerEvents:'none'}}>
+      <span style={{fontFamily:'-apple-system,system-ui',fontWeight:600,fontSize:16,color:'var(--text-strong)'}}>9:41</span>
+      <span style={{display:'inline-flex',gap:6,alignItems:'center'}}>
+        <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="7" width="3" height="5" rx="0.7" fill="currentColor"/><rect x="4.5" y="4.5" width="3" height="7.5" rx="0.7" fill="currentColor"/><rect x="9" y="2" width="3" height="10" rx="0.7" fill="currentColor"/><rect x="13.5" y="0" width="3" height="12" rx="0.7" fill="currentColor"/></svg>
+        <svg width="24" height="12" viewBox="0 0 24 12"><rect x="0.5" y="0.5" width="20" height="11" rx="3" stroke="currentColor" strokeOpacity="0.4" fill="none"/><rect x="2" y="2" width="16" height="8" rx="1.6" fill="currentColor"/><rect x="21.5" y="4" width="1.6" height="4" rx="0.8" fill="currentColor" fillOpacity="0.5"/></svg>
+      </span>
+    </div>
+  );
+}
+function IOSDevice({ children }){
+  return (
+    <div style={{width:402,height:840,borderRadius:52,position:'relative',background:'var(--surface-page)',boxShadow:'0 1px 0 2px rgba(23,20,15,0.06)',overflow:'hidden',color:'var(--text-strong)'}}>
+      <div style={{position:'absolute',top:11,left:'50%',transform:'translateX(-50%)',width:120,height:34,borderRadius:20,background:'#17140F',zIndex:50}} />
+      <IOSStatusBar/>
+      <div style={{height:'100%',display:'flex',flexDirection:'column'}}>{children}</div>
+      <div style={{position:'absolute',bottom:0,left:0,right:0,height:30,display:'flex',justifyContent:'center',alignItems:'flex-end',paddingBottom:8,pointerEvents:'none',zIndex:60}}>
+        <div style={{width:135,height:5,borderRadius:100,background:'rgba(23,20,15,0.28)'}} />
+      </div>
+    </div>
+  );
+}
+Object.assign(window, { IOSDevice });
+
+
+// ───────────────────────────────
+
+// Mock data for the Do You Wanna app UI kit. Exported to window.
+const P = (n, g = 'women') => `https://randomuser.me/api/portraits/${g}/${n}.jpg`;
+
+const PEOPLE = {
+  you:   { id: 'you',   name: 'Alex Rivera', src: P(45, 'men') },
+  maya:  { id: 'maya',  name: 'Maya Lopez',  src: P(44) },
+  theo:  { id: 'theo',  name: 'Theo Park',   src: P(32, 'men') },
+  ana:   { id: 'ana',   name: 'Ana Diaz',    src: P(68) },
+  sam:   { id: 'sam',   name: 'Sam Cole',    src: P(15, 'men') },
+  joy:   { id: 'joy',   name: 'Joy Okafor',  src: P(21) },
+  nico:  { id: 'nico',  name: 'Nico Reyes', src: P(51, 'men') },
+  priya: { id: 'priya', name: 'Priya Shah',  src: P(63) },
+  liam:  { id: 'liam',  name: 'Liam Walsh',  src: P(12, 'men') },
+  zoe:   { id: 'zoe',   name: 'Zoe Adler',   src: P(33) },
+};
+const arr = (...keys) => keys.map((k) => PEOPLE[k]);
+
+const IMG = {
+  hike:  'https://images.unsplash.com/photo-1551632811-561732d1e306?w=720&q=72&auto=format',
+  trivia:'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=720&q=72&auto=format',
+  brunch:'https://images.unsplash.com/photo-1533920379810-6bedac961555?w=720&q=72&auto=format',
+  run:   'https://images.unsplash.com/photo-1502904550040-7534597429ae?w=720&q=72&auto=format',
+  climb: 'https://images.unsplash.com/photo-1522163182402-834f871fd851?w=720&q=72&auto=format',
+};
+
+const CIRCLES = [
+  { id: 'hiking',  name: 'Hiking Crew',     color: 'var(--circle-lime)',  hex: '#7FB800', icon: 'mountain-snow', activity: 'Hiking', members: arr('you','maya','theo','ana','sam','joy','priya','liam'), live: ['maya'] },
+  { id: 'trivia',  name: 'Bar Trivia Gang', color: 'var(--circle-grape)', hex: '#8B5CF6', icon: 'beer',          activity: 'Trivia', members: arr('you','theo','sam','zoe','nico','joy'), live: [] },
+  { id: 'brunch',  name: 'Brunch Club',     color: 'var(--circle-amber)', hex: '#FFB020', icon: 'coffee',        activity: 'Food',   members: arr('you','ana','priya','joy','zoe'), live: [] },
+  { id: 'run',     name: 'Run Club',        color: 'var(--circle-sky)',   hex: '#3B9EFF', icon: 'footprints',    activity: 'Running',members: arr('you','liam','theo','nico','maya','sam','ana','joy','priya','zoe'), live: [] },
+];
+
+const PLANS = [
+  { id: 'p1', circle: 'hiking', title: 'Sunrise at Eagle Peak', img: IMG.hike, day: 'Saturday', time: '7:00 AM', when: 'SAT · 7:00 AM',
+    spot: 'Eagle Peak Trailhead', distance: '2.4 km', going: arr('maya','theo','ana','sam','joy'), goingTotal: 6, live: true, discovery: false,
+    desc: "Early start to catch the sunrise from the ridge. Bring layers and water — about 6km round trip. Coffee after at the trailhead cafe." },
+  { id: 'p2', circle: 'trivia', title: 'Trivia Night at The Anchor', img: IMG.trivia, day: 'Thursday', time: '7:30 PM', when: 'THU · 7:30 PM',
+    spot: 'The Anchor Pub', distance: '1.1 km', going: arr('theo','sam','zoe','nico'), goingTotal: 5, live: false, discovery: true,
+    desc: "Our usual booth. First round's on whoever shows up last. Teams of 6 max so RSVP if you're in." },
+  { id: 'p3', circle: 'brunch', title: "Brunch at Rosa's", img: IMG.brunch, day: 'Sunday', time: '11:00 AM', when: 'SUN · 11:00 AM',
+    spot: "Rosa's Kitchen", distance: '3.0 km', going: arr('ana','priya','joy'), goingTotal: 4, live: false, discovery: false,
+    desc: "Bottomless mimosas til 1. Booked under Ana. Come hungry." },
+  { id: 'p4', circle: 'run', title: 'Saturday Long Run', img: IMG.run, day: 'Saturday', time: '8:00 AM', when: 'SAT · 8:00 AM',
+    spot: 'Riverside Loop', distance: '0.6 km', going: arr('liam','theo','nico','maya'), goingTotal: 8, live: false, discovery: true,
+    desc: "10k easy pace along the river. Regroup at the boathouse." },
+];
+
+const planById = (id) => PLANS.find((p) => p.id === id);
+const circleById = (id) => CIRCLES.find((c) => c.id === id);
+const plansForCircle = (id) => PLANS.filter((p) => p.circle === id);
+
+Object.assign(window, { DYW_DATA: { PEOPLE, CIRCLES, PLANS, IMG, arr, planById, circleById, plansForCircle } });
+
+
+// ───────────────────────────────
+
+// Shared UI-kit helpers (not core components) — headers, section labels, sheets.
+const DS = window.DoYouWannaDesignSystem_3f6d35;
+
+// Large screen header with title + optional action buttons on the right.
+function ScreenHeader({ title, subtitle, eyebrow, right, onBack, pad = 20 }) {
+  const { IconButton } = DS;
+  return (
+    <div style={{ padding: `54px ${pad}px 10px`, background: 'var(--surface-page)', flex: 'none' }}>
+      {onBack && (
+        <div style={{ marginBottom: 8, marginLeft: -8 }}>
+          <IconButton icon="arrow-left" tone="soft" size={40} onClick={onBack} label="Back" />
+        </div>
+      )}
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 12 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {eyebrow && <div className="dyw-eyebrow" style={{ marginBottom: 4 }}>{eyebrow}</div>}
+          <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 30, lineHeight: 1.05, color: 'var(--text-strong)', letterSpacing: '-0.02em' }}>{title}</h1>
+          {subtitle && <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 5, fontWeight: 500 }}>{subtitle}</div>}
+        </div>
+        {right && <div style={{ display: 'flex', gap: 8, flex: 'none' }}>{right}</div>}
+      </div>
+    </div>
+  );
+}
+
+function SectionLabel({ children, action, onAction }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', margin: '4px 0 12px' }}>
+      <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: 17, color: 'var(--text-strong)', letterSpacing: '-0.01em', whiteSpace: 'nowrap' }}>{children}</span>
+      {action && <span onClick={onAction} style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--primary)', cursor: 'pointer' }}>{action}</span>}
+    </div>
+  );
+}
+
+// Scrollable screen body with consistent gutter + bottom space for the tab bar.
+function ScreenBody({ children, pad = 20, bottom = 96, style = {} }) {
+  return (
+    <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', WebkitOverflowScrolling: 'touch', padding: `4px ${pad}px ${bottom}px`, ...style }}>
+      {children}
+    </div>
+  );
+}
+
+// A privacy reassurance strip — load-bearing for the brand.
+function PrivacyNote({ children, tone = 'neutral' }) {
+  const { Icon } = DS;
+  const c = tone === 'good' ? 'var(--success)' : 'var(--text-muted)';
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '11px 13px', background: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)', color: c }}>
+      <Icon name="lock" size={15} strokeWidth={2.4} />
+      <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-body)', lineHeight: 1.35 }}>{children}</span>
+    </div>
+  );
+}
+
+Object.assign(window, { DYW_UI: { ScreenHeader, SectionLabel, ScreenBody, PrivacyNote } });
+
+
+// ───────────────────────────────
+
+// Circles screens — the hero flow.
+const DS_c = window.DoYouWannaDesignSystem_3f6d35;
+
+function CircleRow({ circle, onOpen }) {
+  const { Card, Avatar, AvatarStack, Badge, Icon } = DS_c;
+  const { plansForCircle } = window.DYW_DATA;
+  const next = plansForCircle(circle.id)[0];
+  const isLive = circle.live && circle.live.length > 0;
+  return (
+    <Card pressable padding={0} onClick={() => onOpen(circle.id)} style={{ overflow: 'hidden' }}>
+      <div style={{ display: 'flex', gap: 13, padding: 14, alignItems: 'center' }}>
+        <div style={{ width: 52, height: 52, borderRadius: 'var(--radius-lg)', flex: 'none', display: 'grid', placeItems: 'center', background: `color-mix(in srgb, ${circle.color} 16%, white)`, color: circle.color }}>
+          <Icon name={circle.icon} size={26} strokeWidth={2.3} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 18, color: 'var(--text-strong)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{circle.name}</span>
+            {isLive && <Badge tone="live" dot size="sm">Live</Badge>}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
+            <AvatarStack people={circle.members} size={24} max={4} total={circle.members.length} />
+            <span style={{ fontSize: 12.5, color: 'var(--text-muted)', fontWeight: 600 }}>{circle.members.length} friends</span>
+          </div>
+        </div>
+        <Icon name="chevron-right" size={20} color="var(--text-subtle)" strokeWidth={2.4} />
+      </div>
+      {next && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '11px 16px', borderTop: '1px solid var(--divider)', background: 'var(--surface-sunken)' }}>
+          <Icon name="calendar" size={15} color={circle.color} strokeWidth={2.4} />
+          <span style={{ fontSize: 13, color: 'var(--text-body)', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1 }}>
+            Next · {next.title}
+          </span>
+          <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 700, flex: 'none' }}>{next.when}</span>
+        </div>
+      )}
+    </Card>
+  );
+}
+
+function CirclesScreen({ onOpenCircle, onNotifications }) {
+  const { IconButton, Icon } = DS_c;
+  const { ScreenHeader, ScreenBody } = window.DYW_UI;
+  const { CIRCLES } = window.DYW_DATA;
+  const friends = new Set();
+  CIRCLES.forEach((c) => c.members.forEach((m) => friends.add(m.id)));
+  return (
+    <>
+      <ScreenHeader
+        eyebrow="DO YOU WANNA"
+        title="Your circles"
+        subtitle={`${CIRCLES.length} circles · ${friends.size - 1} friends`}
+        right={<>
+          <IconButton icon="search" tone="soft" />
+          <IconButton icon="bell" tone="soft" onClick={onNotifications} />
+        </>}
+      />
+      <ScreenBody>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
+          {CIRCLES.map((c) => <CircleRow key={c.id} circle={c} onOpen={onOpenCircle} />)}
+          <button onClick={() => onOpenCircle(CIRCLES[0].id)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9, height: 56, borderRadius: 'var(--radius-xl)', border: '2px dashed var(--border-default)', background: 'transparent', color: 'var(--text-muted)', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: 15 }}>
+            <Icon name="plus" size={20} strokeWidth={2.4} /> New circle
+          </button>
+        </div>
+      </ScreenBody>
+    </>
+  );
+}
+
+function CircleDetailScreen({ circleId, onBack, onOpenPlan, onBroadcast, onMap }) {
+  const { Avatar, AvatarStack, IconButton, Button, Icon, EventCard } = DS_c;
+  const { ScreenBody, PrivacyNote, SectionLabel } = window.DYW_UI;
+  const { circleById, plansForCircle, PEOPLE } = window.DYW_DATA;
+  const circle = circleById(circleId);
+  const plans = plansForCircle(circleId);
+  const liveMembers = (circle.live || []).map((id) => PEOPLE[id]);
+
+  return (
+    <>
+      {/* color cover */}
+      <div style={{ background: `linear-gradient(160deg, ${circle.hex}, color-mix(in srgb, ${circle.hex} 70%, #17140F))`, padding: '52px 20px 20px', color: '#fff', flex: 'none' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginLeft: -8 }}>
+          <IconButton icon="arrow-left" tone="glass" size={40} onClick={onBack} label="Back" />
+          <IconButton icon="more-horizontal" tone="glass" size={40} label="More" />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 13, marginTop: 14 }}>
+          <div style={{ width: 56, height: 56, borderRadius: 'var(--radius-lg)', background: 'rgba(255,255,255,0.22)', display: 'grid', placeItems: 'center', flex: 'none' }}>
+            <Icon name={circle.icon} size={28} strokeWidth={2.3} color="#fff" />
+          </div>
+          <div>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 26, lineHeight: 1.05 }}>{circle.name}</div>
+            <div style={{ fontSize: 13, opacity: 0.92, fontWeight: 600, marginTop: 2 }}>{circle.activity} · {circle.members.length} friends</div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 16 }}>
+          <AvatarStack people={circle.members} size={30} max={6} total={circle.members.length} style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,.25))' }} />
+          <button style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: 6, height: 36, padding: '0 14px', borderRadius: 'var(--radius-pill)', border: 'none', background: 'rgba(255,255,255,0.95)', color: 'var(--ink-900)', fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: 13.5, cursor: 'pointer' }}>
+            <Icon name="user-plus" size={16} strokeWidth={2.4} /> Invite
+          </button>
+        </div>
+      </div>
+
+      <ScreenBody bottom={108} style={{ paddingTop: 18 }}>
+        {liveMembers.length > 0 && (
+          <div style={{ marginBottom: 22 }}>
+            <div onClick={onMap} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 13, borderRadius: 'var(--radius-lg)', background: 'var(--success-soft)', border: '1px solid color-mix(in srgb, var(--success) 30%, white)', cursor: 'pointer' }}>
+              <Avatar src={liveMembers[0].src} name={liveMembers[0].name} size={42} status="live" />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontWeight: 700, fontSize: 14.5, color: 'var(--text-strong)' }}>{liveMembers[0].name.split(' ')[0]} is on the way</div>
+                <div style={{ fontSize: 12.5, color: 'var(--green-600)', fontWeight: 600 }}>Sharing live · to {plans[0]?.title}</div>
+              </div>
+              <Button variant="ghost" size="sm" trailingIcon="map">Map</Button>
+            </div>
+          </div>
+        )}
+
+        <SectionLabel action="See all">Upcoming plans</SectionLabel>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 13, marginBottom: 22 }}>
+          {plans[0] && (
+            <EventCard image={plans[0].img} title={plans[0].title} time={plans[0].when}
+              circle={{ name: circle.name, color: circle.color }} going={plans[0].going}
+              goingTotal={plans[0].goingTotal} distance={plans[0].distance} live={plans[0].live}
+              onClick={() => onOpenPlan(plans[0].id)} />
+          )}
+          {plans.slice(1).map((p) => (
+            <EventCard key={p.id} layout="row" image={p.img} title={p.title} time={p.when}
+              circle={{ name: circle.name, color: circle.color }} going={p.going} goingTotal={p.goingTotal}
+              distance={p.distance} onClick={() => onOpenPlan(p.id)} />
+          ))}
+        </div>
+
+        <PrivacyNote tone="good">Only {circle.name} can see these plans and anyone sharing live here.</PrivacyNote>
+      </ScreenBody>
+
+      <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, padding: '12px 16px 28px', background: 'linear-gradient(to top, var(--surface-page) 70%, transparent)' }}>
+        <Button variant="primary" size="lg" block icon="radio" onClick={onBroadcast}>Broadcast a plan</Button>
+      </div>
+    </>
+  );
+}
+
+Object.assign(window, { DYW_Circles: { CirclesScreen, CircleDetailScreen } });
+
+
+// ───────────────────────────────
+
+// Plan detail, live map, and profile screens + create-plan sheet.
+const DS_p = window.DoYouWannaDesignSystem_3f6d35;
+
+// ── Plan detail ───────────────────────────────────────────────
+function PlanDetailScreen({ planId, onBack, onMap }) {
+  const { IconButton, Avatar, AvatarStack, Badge, Icon, RSVPBar, Switch } = DS_p;
+  const { ScreenBody } = window.DYW_UI;
+  const { planById, circleById } = window.DYW_DATA;
+  const { useState } = React;
+  const plan = planById(planId);
+  const circle = circleById(plan.circle);
+  const [state, setState] = useState('going');
+  const [onWay, setOnWay] = useState(false);
+  const [disc, setDisc] = useState(plan.discovery);
+
+  const Detail = ({ icon, label, value }) => (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ width: 38, height: 38, borderRadius: 'var(--radius-md)', background: 'var(--surface-sunken)', display: 'grid', placeItems: 'center', color: 'var(--text-muted)', flex: 'none' }}>
+        <Icon name={icon} size={19} strokeWidth={2.2} />
+      </div>
+      <div>
+        <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>{label}</div>
+        <div style={{ fontSize: 15, color: 'var(--text-strong)', fontWeight: 600 }}>{value}</div>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
+        {/* hero */}
+        <div style={{ position: 'relative', height: 320 }}>
+          <img src={plan.img} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'var(--scrim-photo)' }} />
+          <div style={{ position: 'absolute', top: 50, left: 12, right: 12, display: 'flex', justifyContent: 'space-between' }}>
+            <IconButton icon="arrow-left" tone="glass" size={42} onClick={onBack} label="Back" />
+            <div style={{ display: 'flex', gap: 8 }}>
+              <IconButton icon="share-2" tone="glass" size={42} label="Share" />
+              <IconButton icon="heart" tone="glass" size={42} label="Save" />
+            </div>
+          </div>
+          <div style={{ position: 'absolute', left: 20, right: 20, bottom: 18, color: '#fff' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 26, padding: '0 11px 0 8px', borderRadius: 'var(--radius-pill)', background: 'var(--glass-light)', backdropFilter: 'blur(10px)', color: 'var(--ink-900)', fontSize: 12, fontWeight: 700 }}>
+                <span style={{ width: 9, height: 9, borderRadius: '50%', background: circle.color }} />{circle.name}
+              </span>
+              {plan.live && <Badge tone="live" variant="solid" dot>Live now</Badge>}
+            </div>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 28, lineHeight: 1.08 }}>{plan.title}</div>
+          </div>
+        </div>
+
+        <div style={{ padding: '20px 20px 20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18, marginBottom: 20 }}>
+            <Detail icon="calendar" label="When" value={`${plan.day} · ${plan.time}`} />
+            <Detail icon="map-pin" label="Where" value={plan.spot} />
+            <Detail icon="navigation" label="Distance" value={`${plan.distance} away`} />
+            <Detail icon="users-round" label="Going" value={`${plan.goingTotal} friends`} />
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '13px 15px', background: 'var(--surface-sunken)', borderRadius: 'var(--radius-lg)', marginBottom: 20 }}>
+            <AvatarStack people={plan.going} size={30} max={5} total={plan.goingTotal} />
+            <span style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--text-body)' }}>{plan.going[0].name.split(' ')[0]}, {plan.going[1].name.split(' ')[0]} & {plan.goingTotal - 2} more</span>
+          </div>
+
+          <p style={{ fontSize: 14.5, lineHeight: 1.6, color: 'var(--text-body)', margin: '0 0 20px' }}>{plan.desc}</p>
+
+          {/* map preview */}
+          <div onClick={onMap} style={{ position: 'relative', height: 130, borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', marginBottom: 18, border: '1px solid var(--border-subtle)' }}>
+            <MiniMap color={circle.hex} />
+            <div style={{ position: 'absolute', right: 12, bottom: 12 }}>
+              <Badge tone="neutral" variant="solid" icon={<Icon name="map" size={13} />}>Open map</Badge>
+            </div>
+          </div>
+
+          {/* discovery toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 13, padding: '14px 15px', background: 'var(--surface-card)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)' }}>
+            <div style={{ width: 38, height: 38, borderRadius: 'var(--radius-md)', background: disc ? 'color-mix(in srgb, var(--circle-grape) 16%, white)' : 'var(--surface-sunken)', color: disc ? 'var(--circle-grape)' : 'var(--text-muted)', display: 'grid', placeItems: 'center', flex: 'none' }}>
+              <Icon name="radar" size={20} strokeWidth={2.2} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--text-strong)' }}>Open to discovery</div>
+              <div style={{ fontSize: 12.5, color: 'var(--text-muted)', lineHeight: 1.35 }}>{disc ? 'People nearby doing this can ask to join' : 'Only your circle can see this plan'}</div>
+            </div>
+            <Switch checked={disc} onChange={setDisc} color="var(--circle-grape)" />
+          </div>
+        </div>
+      </div>
+
+      <RSVPBar state={state} onRSVP={setState} onWay={onWay} onMyWay={() => setOnWay(!onWay)} />
+    </>
+  );
+}
+
+// stylized mini map used in plan detail
+function MiniMap({ color = '#7FB800' }) {
+  return (
+    <div style={{ position: 'absolute', inset: 0, background: '#EEF1EC',
+      backgroundImage: 'repeating-linear-gradient(0deg, transparent 0 26px, rgba(23,20,15,0.06) 26px 28px), repeating-linear-gradient(90deg, transparent 0 34px, rgba(23,20,15,0.06) 34px 36px)' }}>
+      <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }} preserveAspectRatio="none" viewBox="0 0 300 130">
+        <path d="M30 110 Q 90 80 130 80 T 250 30" stroke={color} strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" fill="none" />
+      </svg>
+      <span style={{ position: 'absolute', left: '8%', bottom: '12%', width: 14, height: 14, borderRadius: '50%', background: 'var(--info)', border: '3px solid #fff', boxShadow: '0 1px 3px rgba(0,0,0,.3)' }} />
+      <span style={{ position: 'absolute', right: '14%', top: '18%', width: 28, height: 28, borderRadius: '50% 50% 50% 2px', background: color, transform: 'rotate(45deg)', border: '3px solid #fff', boxShadow: '0 2px 6px rgba(0,0,0,.25)' }} />
+    </div>
+  );
+}
+
+// ── Live map ──────────────────────────────────────────────────
+function MapScreen({ onBack, onOpenPlan }) {
+  const { IconButton, Avatar, AvatarStack, Badge, Button, Icon, SegmentedControl } = DS_p;
+  const { planById, PEOPLE } = window.DYW_DATA;
+  const { useState } = React;
+  const plan = planById('p1');
+  const [view, setView] = useState('Map');
+
+  const pins = [
+    { p: PEOPLE.maya, x: '64%', y: '26%', live: true },
+    { p: PEOPLE.theo, x: '38%', y: '44%', live: false },
+    { p: PEOPLE.ana,  x: '74%', y: '54%', live: false },
+  ];
+
+  return (
+    <div style={{ position: 'relative', flex: 1, overflow: 'hidden' }}>
+      {/* map */}
+      <div style={{ position: 'absolute', inset: 0, background: '#E9ECE6',
+        backgroundImage: 'repeating-linear-gradient(0deg, transparent 0 40px, rgba(23,20,15,0.05) 40px 42px), repeating-linear-gradient(90deg, transparent 0 52px, rgba(23,20,15,0.05) 52px 54px)' }}>
+        {/* a couple of "parks" */}
+        <div style={{ position: 'absolute', left: '6%', top: '30%', width: 120, height: 90, borderRadius: 20, background: 'color-mix(in srgb, var(--circle-lime) 22%, #E9ECE6)' }} />
+        <div style={{ position: 'absolute', right: '8%', bottom: '14%', width: 100, height: 120, borderRadius: 20, background: 'color-mix(in srgb, var(--circle-sky) 16%, #E9ECE6)' }} />
+        {/* route */}
+        <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }} preserveAspectRatio="none" viewBox="0 0 400 700">
+          <path d="M120 560 Q 200 470 200 400 T 270 200" stroke="var(--primary)" strokeWidth="6" strokeDasharray="2 13" strokeLinecap="round" fill="none" />
+        </svg>
+        {/* destination pin */}
+        <span style={{ position: 'absolute', right: '26%', top: '22%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <span style={{ width: 36, height: 36, borderRadius: '50% 50% 50% 3px', background: 'var(--circle-lime)', transform: 'rotate(45deg)', border: '3px solid #fff', boxShadow: 'var(--shadow-md)', display: 'grid', placeItems: 'center' }}>
+            <Icon name="mountain-snow" size={16} color="#fff" strokeWidth={2.6} style={{ transform: 'rotate(-45deg)' }} />
+          </span>
+        </span>
+        {/* friend pins */}
+        {pins.map((pin, i) => (
+          <span key={i} style={{ position: 'absolute', left: pin.x, top: pin.y, transform: 'translate(-50%,-50%)' }}>
+            <Avatar src={pin.p.src} name={pin.p.name} size={pin.live ? 46 : 40} ring={pin.live ? 'var(--success)' : '#fff'} status={pin.live ? 'live' : undefined} style={{ filter: 'drop-shadow(0 3px 6px rgba(0,0,0,.25))' }} />
+          </span>
+        ))}
+        {/* you */}
+        <span style={{ position: 'absolute', left: '30%', bottom: '20%', transform: 'translate(-50%,50%)' }}>
+          <span className="dyw-livedot" style={{ position: 'absolute', inset: 0, margin: 'auto', width: 18, height: 18, background: 'var(--info)' }} />
+          <span style={{ display: 'block', width: 18, height: 18, borderRadius: '50%', background: 'var(--info)', border: '3px solid #fff', boxShadow: '0 1px 4px rgba(0,0,0,.3)' }} />
+        </span>
+      </div>
+
+      {/* top chrome */}
+      <div style={{ position: 'absolute', top: 50, left: 16, right: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
+        <IconButton icon="arrow-left" tone="glass" size={44} onClick={onBack} label="Back" />
+        <div style={{ flex: 1 }}><SegmentedControl options={['Map', 'List']} value={view} onChange={setView} /></div>
+        <IconButton icon="locate-fixed" tone="glass" size={44} label="Recenter" />
+      </div>
+
+      {/* bottom sheet */}
+      <div style={{ position: 'absolute', left: 12, right: 12, bottom: 18 }}>
+        <div style={{ background: 'var(--surface-card)', borderRadius: 'var(--radius-sheet)', boxShadow: 'var(--shadow-xl)', padding: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <img src={plan.img} alt="" style={{ width: 56, height: 56, borderRadius: 'var(--radius-md)', objectFit: 'cover', flex: 'none' }} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 17, color: 'var(--text-strong)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{plan.title}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginTop: 5 }}>
+                <Badge tone="live" dot size="sm">Maya en route</Badge>
+                <span style={{ fontSize: 12.5, color: 'var(--text-muted)', fontWeight: 600 }}>· 8 min away</span>
+              </div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 14 }}>
+            <AvatarStack people={plan.going} size={26} max={4} total={plan.goingTotal} label="on the way" />
+            <div style={{ marginLeft: 'auto' }}><Button variant="primary" size="sm" icon="navigation" onClick={() => onOpenPlan(plan.id)}>Join</Button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Profile ───────────────────────────────────────────────────
+function ProfileScreen({ onBack }) {
+  const { Avatar, IconButton, Icon, Card, ListRow, Switch, CircleTag, Badge } = DS_p;
+  const { ScreenBody, SectionLabel, PrivacyNote } = window.DYW_UI;
+  const { PEOPLE } = window.DYW_DATA;
+  const { useState } = React;
+  const me = PEOPLE.you;
+  const [disc, setDisc] = useState(false);
+  const [live, setLive] = useState(false);
+
+  return (
+    <>
+      <div style={{ padding: '54px 20px 0', display: 'flex', justifyContent: 'space-between', flex: 'none' }}>
+        <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 20, color: 'var(--text-strong)', alignSelf: 'center' }}>You</span>
+        <IconButton icon="settings" tone="soft" label="Settings" />
+      </div>
+      <ScreenBody bottom={100}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '16px 0 8px' }}>
+          <Avatar src={me.src} name={me.name} size={92} ring="var(--primary)" />
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 24, color: 'var(--text-strong)', marginTop: 12 }}>{me.name}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'var(--text-muted)', fontSize: 13.5, fontWeight: 600, marginTop: 3 }}>
+            <Icon name="map-pin" size={14} strokeWidth={2.4} /> Mission District, SF
+          </div>
+          <p style={{ fontSize: 14.5, color: 'var(--text-body)', lineHeight: 1.5, maxWidth: 280, marginTop: 12 }}>Always down for a trail, a pub quiz, or a slow brunch. Text me, don't DM.</p>
+        </div>
+
+        <SectionLabel>Into</SectionLabel>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 24 }}>
+          <CircleTag name="Hiking" color="var(--circle-lime)" icon={<Icon name="mountain-snow" size={13} />} />
+          <CircleTag name="Trivia" color="var(--circle-grape)" icon={<Icon name="beer" size={13} />} />
+          <CircleTag name="Running" color="var(--circle-sky)" icon={<Icon name="footprints" size={13} />} />
+          <CircleTag name="Brunch" color="var(--circle-amber)" icon={<Icon name="coffee" size={13} />} />
+          <CircleTag name="Climbing" color="var(--circle-coral)" icon={<Icon name="tent" size={13} />} />
+        </div>
+
+        <SectionLabel>Favorite spots</SectionLabel>
+        <Card padding={6} style={{ marginBottom: 24 }}>
+          <ListRow icon="mountain-snow" iconColor="var(--circle-lime)" title="Eagle Peak Trail" subtitle="Hiked 12 times" chevron divider />
+          <ListRow icon="beer" iconColor="var(--circle-grape)" title="The Anchor Pub" subtitle="Trivia HQ" chevron divider />
+          <ListRow icon="coffee" iconColor="var(--circle-amber)" title="Rosa's Kitchen" subtitle="Sunday brunch" chevron />
+        </Card>
+
+        <SectionLabel>Privacy</SectionLabel>
+        <Card padding={6} style={{ marginBottom: 14 }}>
+          <ListRow icon="radar" iconColor="var(--circle-grape)" title="Discovery" subtitle={disc ? 'Nearby people can find you' : 'Off — invisible to strangers'} trailing={<Switch checked={disc} onChange={setDisc} color="var(--circle-grape)" />} divider />
+          <ListRow icon="navigation" iconColor="var(--success)" title="Live location" subtitle="Per-plan, per-circle only" trailing={<Switch checked={live} onChange={setLive} color="var(--success)" />} divider />
+          <ListRow icon="shield-alert" title="Blocked & reported" value="0" danger chevron />
+        </Card>
+        <PrivacyNote>Discovery is off by default. Strangers only ever see a blurred area, never your exact spot.</PrivacyNote>
+      </ScreenBody>
+    </>
+  );
+}
+
+Object.assign(window, { DYW_Screens: { PlanDetailScreen, MapScreen, ProfileScreen, MiniMap } });
+
+
+// ───────────────────────────────
+
+// App shell: tab + stack navigation, home feed, create-plan sheet, mount.
+const DS_a = window.DoYouWannaDesignSystem_3f6d35;
+
+// ── Home feed ─────────────────────────────────────────────────
+function HomeScreen({ onOpenPlan, onMap, onNotifications }) {
+  const { IconButton, Avatar, Badge, Icon, EventCard } = DS_a;
+  const { ScreenHeader, ScreenBody, SectionLabel } = window.DYW_UI;
+  const { PLANS, PEOPLE, circleById } = window.DYW_DATA;
+  const hero = PLANS[0];
+  const rest = PLANS.slice(1);
+
+  return (
+    <>
+      <ScreenHeader
+        eyebrow="SATURDAY · GOOD MORNING"
+        title="What's on"
+        right={<>
+          <IconButton icon="search" tone="soft" />
+          <IconButton icon="bell" tone="soft" onClick={onNotifications} />
+        </>}
+      />
+      <ScreenBody>
+        {/* live banner */}
+        <div onClick={onMap} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 13, borderRadius: 'var(--radius-lg)', background: 'var(--ink-900)', color: '#fff', marginBottom: 22, cursor: 'pointer' }}>
+          <Avatar src={PEOPLE.maya.src} name="Maya" size={42} status="live" />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontWeight: 700, fontSize: 14.5 }}>Maya is on the way</div>
+            <div style={{ fontSize: 12.5, opacity: 0.75, fontWeight: 500 }}>Sharing live to Hiking Crew · 8 min out</div>
+          </div>
+          <Icon name="chevron-right" size={20} color="rgba(255,255,255,0.6)" strokeWidth={2.4} />
+        </div>
+
+        <SectionLabel action="See all">Next up</SectionLabel>
+        <div style={{ marginBottom: 22 }}>
+          <EventCard image={hero.img} title={hero.title} time={hero.when}
+            circle={{ name: circleById(hero.circle).name, color: circleById(hero.circle).color }}
+            going={hero.going} goingTotal={hero.goingTotal} distance={hero.distance} live={hero.live}
+            onClick={() => onOpenPlan(hero.id)} />
+        </div>
+
+        <SectionLabel>From your circles</SectionLabel>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {rest.map((p) => (
+            <EventCard key={p.id} layout="row" image={p.img} title={p.title} time={p.when}
+              circle={{ name: circleById(p.circle).name, color: circleById(p.circle).color }}
+              going={p.going} goingTotal={p.goingTotal} distance={p.distance}
+              onClick={() => onOpenPlan(p.id)} />
+          ))}
+        </div>
+      </ScreenBody>
+    </>
+  );
+}
+
+// ── Create-plan sheet ─────────────────────────────────────────
+function CreateSheet({ open, onClose }) {
+  const { Button, IconButton, Input, CircleTag, Switch, Icon } = DS_a;
+  const { CIRCLES } = window.DYW_DATA;
+  const { useState } = React;
+  const [sel, setSel] = useState(['hiking']);
+  const [when, setWhen] = useState('tonight');
+  const [disc, setDisc] = useState(false);
+  const toggle = (id) => setSel((s) => s.includes(id) ? s.filter((x) => x !== id) : [...s, id]);
+
+  return (
+    <div style={{ position: 'absolute', inset: 0, zIndex: 200, pointerEvents: open ? 'auto' : 'none' }}>
+      <div onClick={onClose} style={{ position: 'absolute', inset: 0, background: 'var(--overlay-scrim)', opacity: open ? 1 : 0, transition: 'opacity var(--dur-base) var(--ease-out)' }} />
+      <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, background: 'var(--surface-page)', borderRadius: 'var(--radius-sheet) var(--radius-sheet) 0 0', padding: '10px 20px 30px', boxShadow: 'var(--shadow-xl)', transform: open ? 'translateY(0)' : 'translateY(100%)', transition: 'transform var(--dur-slow) var(--ease-spring)' }}>
+        <div style={{ width: 40, height: 5, borderRadius: 99, background: 'var(--ink-300)', margin: '0 auto 16px' }} />
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 18 }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 24, color: 'var(--text-strong)' }}>New plan</h2>
+          <div style={{ marginLeft: 'auto' }}><IconButton icon="x" tone="soft" onClick={onClose} label="Close" /></div>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+          <Input label="What's the plan?" icon="sparkles" placeholder="Sunset climb at the gym" />
+
+          <div>
+            <div style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: 13, color: 'var(--text-strong)', marginBottom: 9 }}>Send to</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {CIRCLES.map((c) => (
+                <CircleTag key={c.id} name={c.name} color={c.color} selected={sel.includes(c.id)} onClick={() => toggle(c.id)} />
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: 13, color: 'var(--text-strong)', marginBottom: 9 }}>When</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {[['now', 'Right now'], ['tonight', 'Tonight'], ['weekend', 'This weekend'], ['pick', 'Pick a time']].map(([v, l]) => (
+                <button key={v} onClick={() => setWhen(v)} style={{ flex: l === 'Pick a time' ? 'none' : 1, height: 42, padding: '0 12px', borderRadius: 'var(--radius-pill)', cursor: 'pointer', whiteSpace: 'nowrap', fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: 13, border: when === v ? 'none' : '1.5px solid var(--border-default)', background: when === v ? 'var(--ink-900)' : 'transparent', color: when === v ? '#fff' : 'var(--text-body)' }}>{l}</button>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '13px 15px', background: 'var(--surface-sunken)', borderRadius: 'var(--radius-lg)' }}>
+            <Icon name="radar" size={20} color={disc ? 'var(--circle-grape)' : 'var(--text-muted)'} strokeWidth={2.2} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-strong)' }}>Open to discovery</div>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Let nearby people ask to join</div>
+            </div>
+            <Switch checked={disc} onChange={setDisc} color="var(--circle-grape)" />
+          </div>
+
+          <Button variant="primary" size="lg" block icon="send" onClick={onClose}>Send to {sel.length || 0} circle{sel.length === 1 ? '' : 's'}</Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Shell ─────────────────────────────────────────────────────
+function AppShell() {
+  const { TabBar } = DS_a;
+  const { IOSDevice } = window;
+  const { CirclesScreen, CircleDetailScreen } = window.DYW_Circles;
+  const { PlanDetailScreen, MapScreen, ProfileScreen } = window.DYW_Screens;
+  const { useState } = React;
+
+  const [tab, setTab] = useState('home');
+  const [stack, setStack] = useState([]); // [{type, id}]
+  const [sheet, setSheet] = useState(false);
+
+  const push = (v) => setStack((s) => [...s, v]);
+  const pop = () => setStack((s) => s.slice(0, -1));
+  const top = stack[stack.length - 1];
+
+  const openCircle = (id) => push({ type: 'circle', id });
+  const openPlan = (id) => push({ type: 'plan', id });
+  const goMap = () => { setStack([]); setTab('map'); };
+
+  const onTab = (k) => {
+    if (k === 'create') { setSheet(true); return; }
+    setStack([]); setTab(k);
+  };
+
+  let screen;
+  if (top?.type === 'circle') {
+    screen = <CircleDetailScreen circleId={top.id} onBack={pop} onOpenPlan={openPlan} onBroadcast={() => setSheet(true)} onMap={goMap} />;
+  } else if (top?.type === 'plan') {
+    screen = <PlanDetailScreen planId={top.id} onBack={pop} onMap={goMap} />;
+  } else if (tab === 'home') {
+    screen = <HomeScreen onOpenPlan={openPlan} onMap={goMap} onNotifications={() => {}} />;
+  } else if (tab === 'circles') {
+    screen = <CirclesScreen onOpenCircle={openCircle} onNotifications={() => {}} />;
+  } else if (tab === 'map') {
+    screen = <MapScreen onBack={() => onTab('home')} onOpenPlan={openPlan} />;
+  } else {
+    screen = <ProfileScreen />;
+  }
+
+  const showTabBar = !top; // hide on pushed detail screens
+  const items = [
+    { key: 'home', icon: 'house', label: 'Home' },
+    { key: 'circles', icon: 'users-round', label: 'Circles', badge: 2 },
+    { key: 'create', icon: 'plus', label: 'Plan' },
+    { key: 'map', icon: 'map', label: 'Nearby' },
+    { key: 'me', icon: 'user-round', label: 'You' },
+  ];
+
+  return (
+    <IOSDevice>
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative', background: 'var(--surface-page)' }}>
+        <div style={{ position: 'relative', flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', background: 'var(--surface-page)' }}>
+          {screen}
+        </div>
+        {showTabBar && <TabBar active={tab} onChange={onTab} items={items} />}
+        <CreateSheet open={sheet} onClose={() => setSheet(false)} />
+      </div>
+    </IOSDevice>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<AppShell />);
+
+</script>
+</body></html>

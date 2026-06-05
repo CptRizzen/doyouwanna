@@ -1,0 +1,53 @@
+<!-- @dsCard group="Components" viewport="700x300" name="Buttons & icon buttons" subtitle="Pill buttons (variants, sizes, states) + icon buttons." -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<style>
+  body{margin:0;padding:22px;background:var(--surface-card);font-family:var(--font-sans)}
+  .grid{display:flex;flex-direction:column;gap:18px}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .lab{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-subtle);width:100%;margin-bottom:-6px}
+</style>
+<script src="https://unpkg.com/lucide@0.456.0/dist/umd/lucide.min.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+  const { Button, IconButton } = window.DoYouWannaDesignSystem_3f6d35;
+  function Demo(){
+    return (
+      <div className="grid">
+        <div className="row"><span className="lab">Variants</span>
+          <Button variant="primary" icon="check">I'm in</Button>
+          <Button variant="accent" icon="sparkles">Hype it</Button>
+          <Button variant="dark">Details</Button>
+          <Button variant="secondary">Maybe</Button>
+          <Button variant="ghost" trailingIcon="chevron-right">See all</Button>
+          <Button variant="danger" icon="shield-alert">Block</Button>
+        </div>
+        <div className="row"><span className="lab">Sizes</span>
+          <Button variant="primary" size="sm">Small</Button>
+          <Button variant="primary" size="md">Medium</Button>
+          <Button variant="primary" size="lg" icon="map-pin">On my way</Button>
+        </div>
+        <div className="row"><span className="lab">States</span>
+          <Button variant="primary" loading>Sending…</Button>
+          <Button variant="primary" disabled>Disabled</Button>
+          <div style={{flex:'1 1 180px',minWidth:160}}><Button variant="primary" block icon="user-plus">Invite friends</Button></div>
+        </div>
+        <div className="row"><span className="lab">Icon buttons</span>
+          <IconButton icon="bell" tone="soft" />
+          <IconButton icon="plus" tone="solid" />
+          <IconButton icon="search" tone="plain" />
+          <IconButton icon="sliders-horizontal" tone="dark" />
+          <IconButton icon="map" tone="soft" shape="square" />
+        </div>
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+</script>
+</body></html>

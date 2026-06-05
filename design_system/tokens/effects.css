@@ -1,0 +1,61 @@
+/* ============================================================
+   Do You Wanna — Radii, shadows, blur, motion
+   Bubbly = generous corner radii. Shadows are warm-tinted
+   (ink, not pure black) and soft. Primary actions get a
+   colored coral "glow" lift.
+   ============================================================ */
+
+:root {
+  /* ---- Corner radii (generous / bubbly) ------------------- */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-2xl: 30px;
+  --radius-3xl: 40px;
+  --radius-pill: 999px;
+  --radius-card: var(--radius-xl);      /* default card */
+  --radius-sheet: 28px;                 /* bottom sheets / modals */
+
+  /* ---- Shadows (warm ink-tinted, soft) -------------------- */
+  --shadow-xs: 0 1px 2px rgba(23, 20, 15, 0.06);
+  --shadow-sm: 0 2px 8px rgba(23, 20, 15, 0.07);
+  --shadow-md: 0 6px 18px rgba(23, 20, 15, 0.09);
+  --shadow-lg: 0 14px 34px rgba(23, 20, 15, 0.13);
+  --shadow-xl: 0 24px 60px rgba(23, 20, 15, 0.18);
+
+  /* Colored lifts — for primary CTAs and accent chips */
+  --shadow-primary: 0 8px 22px rgba(255, 90, 60, 0.36);
+  --shadow-primary-sm: 0 4px 12px rgba(255, 90, 60, 0.30);
+  --shadow-accent: 0 8px 20px rgba(255, 176, 32, 0.34);
+
+  /* Inset (pressed wells, inputs) */
+  --shadow-inset: inset 0 1px 2px rgba(23, 20, 15, 0.06);
+
+  /* ---- Blur / glass --------------------------------------- */
+  --blur-sm: 8px;
+  --blur-md: 16px;
+  --blur-lg: 28px;
+  --glass-light: rgba(255, 251, 245, 0.72);
+  --glass-dark: rgba(23, 20, 15, 0.55);
+
+  /* Protection gradient — for text over photos (bottom-up) */
+  --scrim-photo: linear-gradient(to top, rgba(23,20,15,0.86) 0%, rgba(23,20,15,0.55) 32%, rgba(23,20,15,0) 70%); /* @kind other */
+
+  /* ---- Motion --------------------------------------------- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1); /* @kind other */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* @kind other */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1); /* @kind other */
+  --dur-fast: 130ms;  /* @kind other */
+  --dur-base: 220ms;  /* @kind other */
+  --dur-slow: 360ms;  /* @kind other */
+
+  /* ---- Z layers ------------------------------------------- */
+  --z-base: 1;       /* @kind other */
+  --z-sticky: 50;    /* @kind other */
+  --z-tabbar: 100;   /* @kind other */
+  --z-sheet: 200;    /* @kind other */
+  --z-toast: 300;    /* @kind other */
+  --z-modal: 400;    /* @kind other */
+}

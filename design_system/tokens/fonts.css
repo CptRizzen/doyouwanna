@@ -1,0 +1,11 @@
+/* ============================================================
+   Do You Wanna — Webfonts
+   Type system loaded from Google Fonts.
+   - Fredoka        → display / brand / wordmark (rounded, bubbly)
+   - Hanken Grotesk → UI + body (clean, warm grotesque)
+   - DM Mono        → codes, invite tokens, timestamps, barcodes
+   NOTE: These are CDN @imports. To ship self-hosted binaries,
+   replace these with local @font-face rules pointing at woff2 files.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');

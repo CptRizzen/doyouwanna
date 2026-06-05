@@ -1,0 +1,48 @@
+<!-- @dsCard group="Brand" viewport="700x260" name="Signature photo card" subtitle="The product's hero pattern: photo + scrim + circle tag + going stack." -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;padding:20px;background:var(--surface-card);font-family:var(--font-sans);display:flex;gap:18px}
+  .card{position:relative;width:300px;height:210px;border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-lg);background:linear-gradient(135deg,#FF7855,#C22E13);flex:none}
+  .card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .scrim{position:absolute;inset:0;background:var(--scrim-photo)}
+  .tag{position:absolute;top:12px;left:12px;display:flex;align-items:center;gap:6px;white-space:nowrap;background:var(--glass-light);backdrop-filter:blur(10px);padding:5px 11px 5px 8px;border-radius:var(--radius-pill);font-size:12px;font-weight:700;color:var(--ink-900)}
+  .tag .dot{width:9px;height:9px;border-radius:50%;background:var(--circle-lime)}
+  .body{position:absolute;left:14px;right:14px;bottom:13px;color:#fff}
+  .eye{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.9}
+  .ttl{font-family:var(--font-display);font-weight:600;font-size:21px;line-height:1.1;margin-top:3px}
+  .meta{display:flex;align-items:center;gap:8px;margin-top:9px}
+  .stack{display:flex}
+  .stack span{width:24px;height:24px;border-radius:50%;border:2px solid #fff;margin-left:-7px;background-size:cover;background-position:center}
+  .stack span:first-child{margin:0}
+  .going{font-size:12px;font-weight:600}
+  .notes{font-size:12px;color:var(--text-muted);line-height:1.7;align-self:center}
+  .notes b{color:var(--text-strong)}
+  .notes code{font-family:var(--font-mono);font-size:11px;color:var(--primary)}
+</style></head>
+<body>
+  <div class="card">
+    <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=640&q=70&auto=format" alt="" onerror="this.style.display='none'">
+    <div class="scrim"></div>
+    <div class="tag"><span class="dot"></span>Hiking Crew</div>
+    <div class="body">
+      <div class="eye">Saturday · 7:00 AM</div>
+      <div class="ttl">Sunrise at Eagle Peak</div>
+      <div class="meta">
+        <div class="stack">
+          <span style="background-color:var(--circle-teal);background-image:url(https://i.pravatar.cc/48?img=12)"></span>
+          <span style="background-color:var(--circle-grape);background-image:url(https://i.pravatar.cc/48?img=32)"></span>
+          <span style="background-color:var(--circle-amber);background-image:url(https://i.pravatar.cc/48?img=5)"></span>
+        </div>
+        <span class="going">+5 going</span>
+      </div>
+    </div>
+  </div>
+  <div class="notes">
+    The hero unit everywhere in the app.<br>
+    • <b>--scrim-photo</b> protects text bottom-up<br>
+    • <code>--radius-xl</code> corners, <b>--shadow-lg</b><br>
+    • Glass circle tag, top-left<br>
+    • Overlapping <b>going</b> avatar stack<br>
+    • Fredoka title, sentence case
+  </div>
+</body></html>

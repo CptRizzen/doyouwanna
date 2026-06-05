@@ -1,0 +1,14 @@
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Do You Wanna app icon">
+  <defs>
+    <linearGradient id="dywBg" x1="24" y1="20" x2="216" y2="224" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FF7855"></stop>
+      <stop offset="0.55" stop-color="#FF5A3C"></stop>
+      <stop offset="1" stop-color="#FF3D2E"></stop>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="240" height="240" rx="54" fill="url(#dywBg)"></rect>
+  <path d="M64 70c0-9.94 8.06-18 18-18h76c9.94 0 18 8.06 18 18v52c0 9.94-8.06 18-18 18h-44l-29.5 26.4c-3.9 3.5-10.1 0.73-10.1-4.5V140c-9.94 0-18-8.06-18-18V70Z" fill="#FFFBF5"></path>
+  <circle cx="92" cy="96" r="9" fill="#FF5A3C"></circle>
+  <circle cx="120" cy="96" r="9" fill="#FFB020"></circle>
+  <circle cx="148" cy="96" r="9" fill="#FF5A3C"></circle>
+</svg>

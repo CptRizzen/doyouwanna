@@ -1,0 +1,48 @@
+<!-- @dsCard group="Components" viewport="700x340" name="Forms — input, switch, segmented" subtitle="Text fields, iOS toggles, segmented controls." -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<style>
+  body{margin:0;padding:22px;background:var(--surface-card);font-family:var(--font-sans)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+  .col{display:flex;flex-direction:column;gap:16px}
+  .lab{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-subtle)}
+  .row{display:flex;gap:14px;align-items:center}
+</style>
+<script src="https://unpkg.com/lucide@0.456.0/dist/umd/lucide.min.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+  const { Input, Switch, SegmentedControl } = window.DoYouWannaDesignSystem_3f6d35;
+  const { useState } = React;
+  function Demo(){
+    const [view,setView]=useState('Map');
+    const [rsvp,setRsvp]=useState('going');
+    const [disc,setDisc]=useState(true);
+    const [live,setLive]=useState(false);
+    return (
+      <div className="grid">
+        <div className="col">
+          <span className="lab">Inputs</span>
+          <Input label="Circle name" icon="users" defaultValue="Hiking Crew"/>
+          <Input label="Where to?" icon="map-pin" placeholder="Search a spot"/>
+          <Input label="Email invite" icon="mail" defaultValue="sam@nope" error="That doesn't look right"/>
+        </div>
+        <div className="col">
+          <span className="lab">Segmented</span>
+          <SegmentedControl options={['List','Map']} value={view} onChange={setView}/>
+          <SegmentedControl options={[{value:'going',label:'Going'},{value:'maybe',label:'Maybe'},{value:'cant',label:"Can't"}]} value={rsvp} onChange={setRsvp}/>
+          <span className="lab" style={{marginTop:6}}>Switches</span>
+          <div className="row"><Switch checked={disc} onChange={setDisc}/><span style={{fontWeight:600,fontSize:14}}>Discovery {disc?'on':'off'}</span></div>
+          <div className="row"><Switch checked={live} onChange={setLive} color="var(--success)"/><span style={{fontWeight:600,fontSize:14}}>Share live location</span></div>
+        </div>
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+</script>
+</body></html>

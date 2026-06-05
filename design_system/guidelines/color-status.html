@@ -1,0 +1,20 @@
+<!-- @dsCard group="Colors" viewport="700x150" name="Status colors" subtitle="Success, live, danger, warning, info — with soft tints." -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;padding:18px 20px;background:var(--surface-card);font-family:var(--font-sans)}
+  .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  .col{display:flex;flex-direction:column;gap:6px}
+  .solid{height:54px;border-radius:var(--radius-md) var(--radius-md) 4px 4px;display:flex;align-items:flex-end;padding:7px 9px;color:#fff;font-weight:700;font-size:12px}
+  .soft{height:24px;border-radius:4px 4px var(--radius-md) var(--radius-md);display:flex;align-items:center;padding:0 9px;font-size:10px;font-weight:600}
+  .nm{font-size:11px;color:var(--text-muted);text-align:center}
+  .hx{font-family:var(--font-mono);font-size:9px;opacity:.9}
+</style></head>
+<body>
+  <div class="grid">
+    <div class="col"><div class="solid" style="background:var(--success)">Yes<span class="hx" style="margin-left:auto">1FA971</span></div><div class="soft" style="background:var(--success-soft);color:var(--green-600)">on my way</div><div class="nm">--success</div></div>
+    <div class="col"><div class="solid" style="background:var(--live)">Live<span class="hx" style="margin-left:auto">1FA971</span></div><div class="soft" style="background:var(--success-soft);color:var(--green-600)">● sharing</div><div class="nm">--live</div></div>
+    <div class="col"><div class="solid" style="background:var(--danger)">Block<span class="hx" style="margin-left:auto">E0322B</span></div><div class="soft" style="background:var(--danger-soft);color:var(--red-600)">report</div><div class="nm">--danger</div></div>
+    <div class="col"><div class="solid" style="background:var(--warning);color:var(--ink-900)">Maybe<span class="hx" style="margin-left:auto">F5A800</span></div><div class="soft" style="background:var(--warning-soft);color:var(--amber-700)">pending</div><div class="nm">--warning</div></div>
+    <div class="col"><div class="solid" style="background:var(--info)">Route<span class="hx" style="margin-left:auto">3B9EFF</span></div><div class="soft" style="background:var(--info-soft);color:var(--sky-600)">2.4 km</div><div class="nm">--info</div></div>
+  </div>
+</body></html>

@@ -1,0 +1,52 @@
+<!-- @dsCard group="Components" viewport="700x340" name="Surfaces — card & list rows" subtitle="Rounded white cards and settings/detail list rows." -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<style>
+  body{margin:0;padding:22px;background:var(--surface-sunken);font-family:var(--font-sans)}
+  .grid{display:grid;grid-template-columns:1fr 1.1fr;gap:22px;align-items:start}
+  .lab{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-subtle);margin-bottom:10px;display:block}
+</style>
+<script src="https://unpkg.com/lucide@0.456.0/dist/umd/lucide.min.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+  const { Card, ListRow, Switch, Badge, Avatar } = window.DoYouWannaDesignSystem_3f6d35;
+  function Demo(){
+    return (
+      <div className="grid">
+        <div>
+          <span className="lab">Cards</span>
+          <div style={{display:'flex',flexDirection:'column',gap:14}}>
+            <Card>
+              <div style={{fontFamily:'var(--font-display)',fontWeight:600,fontSize:18,color:'var(--text-strong)'}}>Friday plans</div>
+              <div style={{fontSize:14,color:'var(--text-muted)',marginTop:4}}>3 circles · 12 people around</div>
+            </Card>
+            <Card pressable selected>
+              <div style={{display:'flex',alignItems:'center',gap:12}}>
+                <Avatar name="Run Club" size={40} color="var(--circle-sky)"/>
+                <div><div style={{fontWeight:700,fontSize:15}}>Run Club</div><div style={{fontSize:13,color:'var(--text-muted)'}}>Selected</div></div>
+              </div>
+            </Card>
+          </div>
+        </div>
+        <div>
+          <span className="lab">List rows</span>
+          <Card padding={6}>
+            <ListRow icon="bell" title="Notifications" subtitle="When friends head out" chevron divider/>
+            <ListRow icon="radar" iconColor="var(--circle-grape)" title="Discovery" subtitle="Let nearby people find you" trailing={<Switch defaultChecked={false}/>} divider/>
+            <ListRow icon="navigation" iconColor="var(--success)" title="Live location" trailing={<Badge tone="live" dot>On</Badge>} divider/>
+            <ListRow icon="map-pin" title="Favorite spots" value="6" chevron divider/>
+            <ListRow icon="shield-alert" title="Block & report" danger chevron/>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+</script>
+</body></html>

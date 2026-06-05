@@ -1,0 +1,66 @@
+/* ============================================================
+   Do You Wanna — Typography tokens
+   Display = Fredoka (rounded/bubbly). UI/body = Hanken Grotesk.
+   Mono = DM Mono. Mobile-first scale.
+   ============================================================ */
+
+:root {
+  /* Families */
+  --font-display: 'Fredoka', system-ui, sans-serif;
+  --font-sans: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+  --font-mono: 'DM Mono', ui-monospace, 'SF Mono', monospace;
+
+  /* Weights */
+  --fw-regular: 400;    /* @kind font */
+  --fw-medium: 500;     /* @kind font */
+  --fw-semibold: 600;   /* @kind font */
+  --fw-bold: 700;       /* @kind font */
+  --fw-extrabold: 800;  /* @kind font */
+
+  /* Type scale (px) — tuned for mobile screens */
+  --text-2xs: 11px;
+  --text-xs:  12px;
+  --text-sm:  13px;
+  --text-base:15px;   /* default body on mobile */
+  --text-md:  16px;
+  --text-lg:  18px;
+  --text-xl:  20px;
+  --text-2xl: 24px;
+  --text-3xl: 30px;
+  --text-4xl: 36px;
+  --text-5xl: 46px;
+  --text-6xl: 58px;
+
+  /* Line heights */
+  --leading-tight: 1.1;
+  --leading-snug: 1.25;
+  --leading-normal: 1.45;
+  --leading-relaxed: 1.6;
+
+  /* Letter spacing */
+  --tracking-tight: -0.02em;
+  --tracking-snug: -0.01em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.02em;
+  --tracking-wider: 0.08em;   /* eyebrows / labels in caps */
+
+  /* ---- Semantic roles --------------------------------------
+     Use these for consistent text styling. Each bundles
+     family + size + weight + line-height intent. */
+  --role-wordmark-font: var(--font-display);
+
+  --role-display-font: var(--font-display);
+  --role-display-weight: var(--fw-600, 600);
+
+  --role-heading-font: var(--font-display);
+  --role-heading-weight: 600;
+
+  --role-body-font: var(--font-sans);
+  --role-body-weight: var(--fw-regular);
+
+  --role-label-font: var(--font-sans);
+  --role-label-weight: var(--fw-semibold);
+
+  --role-eyebrow-font: var(--font-sans);
+  --role-eyebrow-weight: var(--fw-bold);
+}

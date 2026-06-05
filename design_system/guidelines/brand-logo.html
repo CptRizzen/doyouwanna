@@ -1,0 +1,28 @@
+<!-- @dsCard group="Brand" viewport="700x200" name="Wordmark & app icon" subtitle="Fredoka lockup + the speech-bubble mark. Light, dark, mono." -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;padding:22px;background:var(--surface-card);font-family:var(--font-sans);display:flex;gap:30px;align-items:center;flex-wrap:wrap}
+  .lock{display:flex;align-items:center;gap:14px}
+  .lock img{width:60px;height:60px;border-radius:16px;box-shadow:var(--shadow-md)}
+  .wm{font-family:var(--font-display);font-weight:600;letter-spacing:-.02em;line-height:1;color:var(--text-strong);font-size:30px}
+  .wm em{font-style:normal;color:var(--primary)}
+  .sub{font-size:11px;color:var(--text-muted);margin-top:3px;letter-spacing:.04em}
+  .icons{display:flex;gap:14px;align-items:center}
+  .icons img{width:56px;height:56px;border-radius:15px;box-shadow:var(--shadow-sm)}
+  .mono{width:56px;height:56px;border-radius:15px;background:var(--ink-100);color:var(--ink-900);display:grid;place-items:center}
+  .div{width:1px;height:90px;background:var(--divider)}
+</style></head>
+<body>
+  <div>
+    <div class="lock">
+      <img src="../assets/app-icon.svg" alt="">
+      <div><div class="wm">do you <em>wanna</em></div><div class="sub">FRIENDS · PLANS · NEARBY</div></div>
+    </div>
+  </div>
+  <div class="div"></div>
+  <div class="icons">
+    <img src="../assets/app-icon.svg" alt="primary">
+    <img src="../assets/app-icon-dark.svg" alt="on dark">
+    <div class="mono"><img src="../assets/glyph.svg" alt="mono glyph" style="width:34px;height:34px;box-shadow:none;border-radius:0;color:var(--ink-900)"></div>
+  </div>
+</body></html>

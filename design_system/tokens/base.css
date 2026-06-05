@@ -1,0 +1,65 @@
+/* ============================================================
+   Do You Wanna — Base / reset + a few shared helpers
+   Lightweight. Tokens do the heavy lifting.
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--text-body);
+  background: var(--surface-page);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Display headings default to Fredoka */
+h1, h2, h3, h4, .dyw-display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--text-strong);
+  letter-spacing: var(--tracking-snug);
+  margin: 0;
+}
+
+/* The wordmark lockup ------------------------------------- */
+.dyw-wordmark {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-strong);
+  display: inline-flex;
+  align-items: baseline;
+  line-height: 1;
+}
+.dyw-wordmark .dyw-wordmark__accent { color: var(--primary); }
+
+/* Eyebrow / overline label -------------------------------- */
+.dyw-eyebrow {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Live dot pulse ------------------------------------------ */
+.dyw-livedot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--live);
+  box-shadow: 0 0 0 0 rgba(31, 169, 113, 0.6);
+  animation: dyw-pulse 1.8s var(--ease-out) infinite;
+  display: inline-block;
+}
+@keyframes dyw-pulse {
+  70% { box-shadow: 0 0 0 8px rgba(31, 169, 113, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(31, 169, 113, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}

@@ -49,7 +49,7 @@ begin
   values (
     new.id,
     coalesce(
-      split_part(new.email, '@', 1) || '_' || substr(encode(gen_random_bytes(3), 'hex'), 1, 6),
+      split_part(new.email, '@', 1) || '_' || substr(replace(gen_random_uuid()::text, '-', ''), 1, 6),
       'user_' || substr(new.id::text, 1, 8)
     ),
     split_part(new.email, '@', 1)

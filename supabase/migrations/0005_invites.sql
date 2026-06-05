@@ -8,7 +8,7 @@ create table public.invites (
   circle_id uuid references public.circles (id) on delete cascade,
   inviter_id uuid not null references public.profiles (id) on delete cascade,
   email citext not null,
-  token text not null unique default encode(gen_random_bytes(16), 'hex'),
+  token text not null unique default replace(gen_random_uuid()::text, '-', ''),
   status text not null default 'pending'
     check (status in ('pending', 'accepted', 'expired', 'revoked')),
   accepted_by uuid references public.profiles (id) on delete set null,

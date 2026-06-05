@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -8,7 +9,7 @@ import {
   View,
   ViewProps,
 } from 'react-native';
-import { colors, radius, spacing } from '@/constants/theme';
+import { colors, fonts, radius, shadows, spacing } from '@/constants/theme';
 
 export function Button({
   title,
@@ -22,29 +23,53 @@ export function Button({
   onPress: () => void;
   loading?: boolean;
   disabled?: boolean;
-  variant?: 'primary' | 'secondary' | 'danger';
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
   testID?: string;
 }) {
   const isDisabled = disabled || loading;
-  const bg =
-    variant === 'primary'
-      ? colors.primary
-      : variant === 'danger'
-        ? colors.danger
-        : colors.surface;
-  const fg = variant === 'secondary' ? colors.text : '#ffffff';
+
+  const variantStyles = {
+    primary: {
+      backgroundColor: colors.primary,
+      ...shadows.primary,
+    },
+    secondary: {
+      backgroundColor: colors.surfaceCard,
+      borderWidth: 1.5,
+      borderColor: colors.borderDefault,
+    },
+    danger: {
+      backgroundColor: colors.danger,
+    },
+    ghost: {
+      backgroundColor: 'transparent',
+    },
+  }[variant];
+
+  const textColor = {
+    primary: '#FFFFFF',
+    secondary: colors.text,
+    danger: '#FFFFFF',
+    ghost: colors.primary,
+  }[variant];
+
   return (
     <Pressable
       testID={testID}
       accessibilityRole="button"
       onPress={onPress}
       disabled={isDisabled}
-      style={[styles.button, { backgroundColor: bg, opacity: isDisabled ? 0.6 : 1 }]}
+      style={({ pressed }) => [
+        styles.button,
+        variantStyles,
+        isDisabled && styles.buttonDisabled,
+        pressed && !isDisabled && styles.buttonPressed,
+      ]}
     >
       {loading ? (
-        <ActivityIndicator color={fg} />
+        <ActivityIndicator color={textColor} />
       ) : (
-        <Text style={[styles.buttonText, { color: fg }]}>{title}</Text>
+        <Text style={[styles.buttonText, { color: textColor }]}>{title}</Text>
       )}
     </Pressable>
   );
@@ -59,7 +84,7 @@ export function Field({
       <Text style={styles.label}>{label}</Text>
       <TextInput
         style={styles.input}
-        placeholderTextColor={colors.textMuted}
+        placeholderTextColor={colors.textSubtle}
         {...props}
       />
     </View>
@@ -87,41 +112,87 @@ export function Muted({ children }: { children: React.ReactNode }) {
   return <Text style={styles.muted}>{children}</Text>;
 }
 
+export function Eyebrow({ children }: { children: React.ReactNode }) {
+  return <Text style={styles.eyebrow}>{children}</Text>;
+}
+
 const styles = StyleSheet.create({
   button: {
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
-    borderRadius: radius.md,
+    height: 52,
+    borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: spacing.lg,
   },
-  buttonText: { fontSize: 16, fontWeight: '600' },
+  buttonDisabled: { opacity: 0.45 },
+  buttonPressed: { opacity: 0.88, transform: [{ scale: 0.97 }] },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    fontFamily: Platform.OS === 'web' ? fonts.sans : undefined,
+    letterSpacing: -0.2,
+  },
+
   field: { marginBottom: spacing.md },
   label: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 13,
+    fontWeight: '600',
+    fontFamily: Platform.OS === 'web' ? fonts.sans : undefined,
     color: colors.textMuted,
     marginBottom: spacing.xs,
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
   },
   input: {
-    borderWidth: 1,
+    height: 52,
+    borderWidth: 1.5,
     borderColor: colors.border,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm + 2,
     fontSize: 16,
+    fontFamily: Platform.OS === 'web' ? fonts.sans : undefined,
     color: colors.text,
-    backgroundColor: colors.background,
+    backgroundColor: colors.surfaceCard,
   },
+
   card: {
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: radius.md,
+    borderRadius: radius.xl,
     padding: spacing.md,
     marginBottom: spacing.sm,
-    backgroundColor: colors.background,
+    backgroundColor: colors.surfaceCard,
+    ...shadows.sm,
   },
-  error: { color: colors.danger, marginBottom: spacing.sm },
-  title: { fontSize: 24, fontWeight: '700', color: colors.text, marginBottom: spacing.md },
-  muted: { color: colors.textMuted },
+
+  error: {
+    color: colors.danger,
+    fontSize: 14,
+    fontFamily: Platform.OS === 'web' ? fonts.sans : undefined,
+    marginBottom: spacing.sm,
+  },
+
+  title: {
+    fontSize: 26,
+    fontWeight: '700',
+    fontFamily: Platform.OS === 'web' ? fonts.display : undefined,
+    color: colors.text,
+    marginBottom: spacing.md,
+    letterSpacing: -0.5,
+  },
+
+  muted: {
+    fontSize: 14,
+    fontFamily: Platform.OS === 'web' ? fonts.sans : undefined,
+    color: colors.textMuted,
+  },
+
+  eyebrow: {
+    fontSize: 11,
+    fontWeight: '700',
+    fontFamily: Platform.OS === 'web' ? fonts.sans : undefined,
+    color: colors.textMuted,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+  },
 });

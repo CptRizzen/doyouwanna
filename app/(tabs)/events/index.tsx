@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     color: colors.primary,
-    backgroundColor: '#dbeafe',
+    backgroundColor: colors.primaryTint,
     paddingHorizontal: spacing.sm,
     paddingVertical: 2,
     borderRadius: 999,

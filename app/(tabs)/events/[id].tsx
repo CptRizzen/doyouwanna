@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   },
   rsvpCurrent: {
     alignSelf: 'flex-start',
-    backgroundColor: '#dbeafe',
+    backgroundColor: colors.primarySoft,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
     borderRadius: 999,

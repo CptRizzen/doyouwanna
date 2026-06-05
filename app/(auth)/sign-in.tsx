@@ -1,9 +1,9 @@
 import { Link } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, ErrorText, Field, Muted, Title } from '@/components/ui';
-import { colors, spacing } from '@/constants/theme';
+import { Button, ErrorText, Field, Muted } from '@/components/ui';
+import { colors, fonts, spacing } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
 
 export default function SignIn() {
@@ -28,7 +28,10 @@ export default function SignIn() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.inner}>
-        <Title>Welcome back</Title>
+        <View style={styles.wordmark}>
+          <Text style={styles.wordmarkText}>do you wanna</Text>
+          <Text style={styles.tagline}>hang with your people</Text>
+        </View>
         <Field
           label="Email"
           value={email}
@@ -60,7 +63,21 @@ export default function SignIn() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  inner: { flex: 1, justifyContent: 'center', padding: spacing.lg },
+  inner: { flex: 1, justifyContent: 'center', padding: spacing.lg, maxWidth: 440, width: '100%', alignSelf: 'center' },
+  wordmark: { alignItems: 'center', marginBottom: spacing.xxl },
+  wordmarkText: {
+    fontSize: 38,
+    fontWeight: '700',
+    fontFamily: Platform.OS === 'web' ? fonts.display : undefined,
+    color: colors.primary,
+    letterSpacing: -0.5,
+  },
+  tagline: {
+    fontSize: 15,
+    fontFamily: Platform.OS === 'web' ? fonts.sans : undefined,
+    color: colors.textMuted,
+    marginTop: 4,
+  },
   footer: { flexDirection: 'row', justifyContent: 'center', marginTop: spacing.lg },
   link: { color: colors.primary, fontWeight: '600' },
 });

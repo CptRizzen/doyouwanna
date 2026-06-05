@@ -1,0 +1,44 @@
+# Supabase local development configuration.
+# Docs: https://supabase.com/docs/guides/cli/config
+project_id = "doyouwanna"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[db.pooler]
+enabled = false
+
+[realtime]
+enabled = true
+
+[studio]
+enabled = true
+port = 54323
+
+[inbucket]
+# Local email testing inbox (stands in for Resend during development).
+enabled = true
+port = 54324
+
+[auth]
+enabled = true
+site_url = "doyouwanna://"
+additional_redirect_urls = ["doyouwanna://", "exp://"]
+jwt_expiry = 3600
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+enable_confirmations = false
+
+[storage]
+enabled = true

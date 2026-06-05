@@ -37,4 +37,11 @@ export const handlers = [
   http.post(`${SUPABASE_URL}/rest/v1/:table`, async ({ request }) =>
     HttpResponse.json([await request.json()], { status: 201 }),
   ),
+  http.patch(`${SUPABASE_URL}/rest/v1/:table`, async ({ request }) =>
+    HttpResponse.json([await request.json()], { status: 200 }),
+  ),
+  // Edge Functions: acknowledge send-invite by default.
+  http.post(`${SUPABASE_URL}/functions/v1/send-invite`, () =>
+    HttpResponse.json({ ok: true }),
+  ),
 ];

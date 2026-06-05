@@ -58,3 +58,74 @@ describe('Supabase REST via MSW', () => {
     expect(error).not.toBeNull();
   });
 });
+
+describe('Invites via MSW', () => {
+  it('inserts an invite row', async () => {
+    const invite = {
+      id: 'inv-1',
+      email: 'friend@example.com',
+      circle_id: 'circle-1',
+      event_id: null,
+      inviter_id: 'user-1',
+      token: 'abc123',
+      status: 'pending',
+      accepted_by: null,
+      expires_at: '2026-06-19T00:00:00Z',
+      created_at: '2026-06-05T00:00:00Z',
+      accepted_at: null,
+    };
+
+    server.use(
+      http.post(`${SUPABASE_URL}/rest/v1/invites`, () =>
+        HttpResponse.json([invite], { status: 201 }),
+      ),
+    );
+
+    const supabase = makeClient();
+    const { data, error } = await supabase
+      .from('invites')
+      .insert({ email: 'friend@example.com', inviter_id: 'user-1', circle_id: 'circle-1' })
+      .select()
+      .single();
+
+    expect(error).toBeNull();
+    expect(data).not.toBeNull();
+  });
+
+  it('returns pending invites for a circle', async () => {
+    server.use(
+      http.get(`${SUPABASE_URL}/rest/v1/invites`, () =>
+        HttpResponse.json([
+          { id: 'inv-1', email: 'a@b.com', status: 'pending', circle_id: 'c1' },
+          { id: 'inv-2', email: 'c@d.com', status: 'pending', circle_id: 'c1' },
+        ]),
+      ),
+    );
+
+    const supabase = makeClient();
+    const { data, error } = await supabase
+      .from('invites')
+      .select('*')
+      .eq('circle_id', 'c1')
+      .eq('status', 'pending');
+
+    expect(error).toBeNull();
+    expect(data).toHaveLength(2);
+  });
+
+  it('revokes an invite', async () => {
+    server.use(
+      http.patch(`${SUPABASE_URL}/rest/v1/invites`, () =>
+        HttpResponse.json([{ id: 'inv-1', status: 'revoked' }]),
+      ),
+    );
+
+    const supabase = makeClient();
+    const { error } = await supabase
+      .from('invites')
+      .update({ status: 'revoked' })
+      .eq('id', 'inv-1');
+
+    expect(error).toBeNull();
+  });
+});

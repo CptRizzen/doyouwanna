@@ -1,9 +1,11 @@
 import { useLocalSearchParams } from 'expo-router';
+import { useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEventAttendees, useMyRsvp, useSetRsvp } from '@/api/attendees';
 import { useEvent } from '@/api/events';
-import { Card, ErrorText, Muted, Title } from '@/components/ui';
+import { useCreateInvite, useEventInvites, useRevokeInvite } from '@/api/invites';
+import { Button, Card, ErrorText, Field, Muted, Title } from '@/components/ui';
 import { RSVP_TRANSITIONS } from '@/domain/rsvp';
 import { RsvpStatus } from '@/domain/types';
 import { isCheckin } from '@/domain/events';
@@ -26,6 +28,25 @@ export default function EventDetail() {
   const { data: myRsvp } = useMyRsvp(eventId);
   const { data: attendees } = useEventAttendees(eventId);
   const setRsvp = useSetRsvp(eventId);
+  const createInvite = useCreateInvite();
+  const revokeInvite = useRevokeInvite(undefined, eventId);
+  const { data: pendingInvites } = useEventInvites(eventId);
+
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteError, setInviteError] = useState<string | null>(null);
+  const [inviteSent, setInviteSent] = useState(false);
+
+  const onInvite = async () => {
+    setInviteError(null);
+    setInviteSent(false);
+    try {
+      await createInvite.mutateAsync({ email: inviteEmail.trim(), eventId });
+      setInviteEmail('');
+      setInviteSent(true);
+    } catch (e) {
+      setInviteError(e instanceof Error ? e.message : 'Could not send invite');
+    }
+  };
 
   // No attendee row yet behaves like 'invited' for transition purposes.
   const current: RsvpStatus = myRsvp?.rsvp_status ?? 'invited';
@@ -67,6 +88,43 @@ export default function EventDetail() {
             <ErrorText
               message={setRsvp.error instanceof Error ? setRsvp.error.message : null}
             />
+
+            <Text style={styles.sectionLabel}>Invite someone</Text>
+            <Field
+              label="Email address"
+              value={inviteEmail}
+              onChangeText={(v) => { setInviteEmail(v); setInviteSent(false); }}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              placeholder="friend@example.com"
+            />
+            <ErrorText message={inviteError} />
+            {inviteSent ? <Muted>Invite sent!</Muted> : null}
+            <Button
+              title="Send invite"
+              onPress={onInvite}
+              loading={createInvite.isPending}
+              disabled={!inviteEmail.trim()}
+              variant="secondary"
+              testID="send-event-invite-button"
+            />
+            {pendingInvites && pendingInvites.length > 0 ? (
+              <>
+                <Text style={styles.sectionLabel}>Pending invites</Text>
+                {pendingInvites.map((inv) => (
+                  <Card key={inv.id}>
+                    <Text style={styles.attendeeName}>{inv.email}</Text>
+                    <Muted>Expires {new Date(inv.expires_at).toLocaleDateString()}</Muted>
+                    <Button
+                      title="Revoke"
+                      onPress={() => revokeInvite.mutate(inv.id)}
+                      loading={revokeInvite.isPending}
+                      variant="danger"
+                    />
+                  </Card>
+                ))}
+              </>
+            ) : null}
 
             <Text style={styles.sectionLabel}>Attendees</Text>
           </View>

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAddMemberByUsername, useCircle, useCircleMembers } from '@/api/circles';
+import { useCircleInvites, useCreateInvite, useRevokeInvite } from '@/api/invites';
 import { Button, Card, ErrorText, Field, Muted, Title } from '@/components/ui';
 import { colors, spacing } from '@/constants/theme';
 
@@ -13,8 +14,15 @@ export default function CircleDetail() {
   const { data: members } = useCircleMembers(circleId);
   const addMember = useAddMemberByUsername(circleId);
 
+  const createInvite = useCreateInvite();
+  const revokeInvite = useRevokeInvite(circleId);
+  const { data: pendingInvites } = useCircleInvites(circleId);
+
   const [username, setUsername] = useState('');
+  const [inviteEmail, setInviteEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [inviteError, setInviteError] = useState<string | null>(null);
+  const [inviteSent, setInviteSent] = useState(false);
 
   const onAdd = async () => {
     setError(null);
@@ -23,6 +31,18 @@ export default function CircleDetail() {
       setUsername('');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not add member');
+    }
+  };
+
+  const onInvite = async () => {
+    setInviteError(null);
+    setInviteSent(false);
+    try {
+      await createInvite.mutateAsync({ email: inviteEmail.trim(), circleId });
+      setInviteEmail('');
+      setInviteSent(true);
+    } catch (e) {
+      setInviteError(e instanceof Error ? e.message : 'Could not send invite');
     }
   };
 
@@ -54,6 +74,45 @@ export default function CircleDetail() {
               variant="secondary"
               testID="add-member-button"
             />
+
+            <Text style={styles.sectionLabel}>Invite by email</Text>
+            <Field
+              label="Email address"
+              value={inviteEmail}
+              onChangeText={(v) => { setInviteEmail(v); setInviteSent(false); }}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              placeholder="friend@example.com"
+            />
+            <ErrorText message={inviteError} />
+            {inviteSent ? (
+              <Muted>Invite sent!</Muted>
+            ) : null}
+            <Button
+              title="Send invite"
+              onPress={onInvite}
+              loading={createInvite.isPending}
+              disabled={!inviteEmail.trim()}
+              variant="secondary"
+              testID="send-invite-button"
+            />
+            {pendingInvites && pendingInvites.length > 0 ? (
+              <>
+                <Text style={styles.sectionLabel}>Pending invites</Text>
+                {pendingInvites.map((inv) => (
+                  <Card key={inv.id}>
+                    <Text style={styles.memberName}>{inv.email}</Text>
+                    <Muted>Expires {new Date(inv.expires_at).toLocaleDateString()}</Muted>
+                    <Button
+                      title="Revoke"
+                      onPress={() => revokeInvite.mutate(inv.id)}
+                      loading={revokeInvite.isPending}
+                      variant="danger"
+                    />
+                  </Card>
+                ))}
+              </>
+            ) : null}
 
             <Text style={styles.sectionLabel}>Members</Text>
           </View>

@@ -25,12 +25,24 @@ module.exports = {
       setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
       moduleNameMapper,
     },
-    // NOTE: a third "api" project for MSW-backed Supabase REST tests is staged
-    // but not wired into the default run yet. MSW v2 resolves to its TS source
-    // under babel-preset-expo (defeating moduleNameMapper), so the api project
-    // needs a plain @babel/preset-typescript transform + module-commonjs plugin
-    // (not currently installed). The infra is in test/msw/* and test/api/* and
-    // documented in test/api/README.md for the next iteration.
+    {
+      displayName: 'api',
+      testEnvironment: 'node',
+      testMatch: ['<rootDir>/test/api/**/*.test.ts'],
+      setupFilesAfterEnv: ['<rootDir>/test/setup.msw.ts'],
+      moduleNameMapper,
+      transform: {
+        '^.+\\.(ts|tsx|js|jsx|mjs|cjs)$': ['babel-jest', {
+          configFile: false,
+          presets: ['@babel/preset-typescript', ['@babel/preset-react', { runtime: 'automatic' }]],
+          plugins: ['@babel/plugin-transform-modules-commonjs'],
+        }],
+      },
+      testEnvironmentOptions: { customExportConditions: ['node', 'require', 'default'] },
+      transformIgnorePatterns: [
+        'node_modules/(?!(msw|rettime|until-async|@open-draft/deferred-promise|@mswjs)/)',
+      ],
+    },
   ],
   // Coverage config lives at the root when using `projects`.
   collectCoverageFrom: [

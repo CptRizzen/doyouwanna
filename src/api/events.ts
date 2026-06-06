@@ -51,8 +51,38 @@ export interface CreateEventInput {
   is_checkin?: boolean;
   location?: { latitude: number; longitude: number } | null;
   place_name?: string | null;
+  photo_url?: string | null;
   /** Circles to broadcast this event to. */
   circleIds: string[];
+}
+
+export type EventWithRsvp = EventRow & { my_rsvp: string | null };
+
+/** Events visible to current user, joined with user's own RSVP status.
+ *  Sorted: RSVP'd (going/maybe/invited) first, then open plans. */
+export function useEventsWithRsvp() {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: [...eventKeys.all, 'with-rsvp', user?.id] as const,
+    enabled: !!user,
+    queryFn: async (): Promise<EventWithRsvp[]> => {
+      const [{ data: events, error: evErr }, { data: rsvps, error: rvErr }] = await Promise.all([
+        supabase.from('events').select('*').order('starts_at', { ascending: true, nullsFirst: false }),
+        supabase.from('event_attendees').select('event_id, rsvp_status').eq('user_id', user!.id),
+      ]);
+      if (evErr) throw evErr;
+      if (rvErr) throw rvErr;
+      const rsvpMap = new Map((rsvps ?? []).map((r) => [r.event_id, r.rsvp_status]));
+      const all: EventWithRsvp[] = (events ?? []).map((e) => ({
+        ...e,
+        my_rsvp: rsvpMap.get(e.id) ?? null,
+      }));
+      return all.sort((a, b) => {
+        const rank = (r: string | null) => (r === 'going' || r === 'maybe' ? 0 : r === 'invited' ? 1 : 2);
+        return rank(a.my_rsvp) - rank(b.my_rsvp);
+      });
+    },
+  });
 }
 
 /**
@@ -83,6 +113,7 @@ export function useCreateEvent() {
           is_checkin: input.is_checkin ?? input.starts_at == null,
           location: locationWkt,
           place_name: input.place_name ?? null,
+          photo_url: input.photo_url ?? null,
         })
         .select()
         .single();

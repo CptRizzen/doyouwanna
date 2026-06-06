@@ -10,9 +10,9 @@ export default function EventsStack() {
         headerTintColor: colors.primary,
       }}
     >
-      <Stack.Screen name="index" options={{ title: 'Events' }} />
+      <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="new" options={{ title: 'New Event', presentation: 'modal' }} />
-      <Stack.Screen name="[id]" options={{ title: 'Event' }} />
+      <Stack.Screen name="[id]" options={{ headerShown: false }} />
     </Stack>
   );
 }

@@ -10,9 +10,9 @@ export default function CirclesStack() {
         headerTintColor: colors.primary,
       }}
     >
-      <Stack.Screen name="index" options={{ title: 'Circles' }} />
+      <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="new" options={{ title: 'New Circle', presentation: 'modal' }} />
-      <Stack.Screen name="[id]" options={{ title: 'Circle' }} />
+      <Stack.Screen name="[id]" options={{ headerShown: false }} />
     </Stack>
   );
 }

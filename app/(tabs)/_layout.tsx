@@ -1,43 +1,20 @@
 import { Tabs } from 'expo-router';
-import { Text, type ColorValue } from 'react-native';
 import { colors } from '@/constants/theme';
-
-/** Minimal text-based tab icons to avoid pulling an icon font in this PR. */
-function TabIcon({ label, color }: { label: string; color: ColorValue }) {
-  return <Text style={{ color, fontSize: 18 }}>{label}</Text>;
-}
+import { CustomTabBar } from '@/components/TabBar';
 
 export default function TabsLayout() {
   return (
     <Tabs
+      tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textMuted,
         headerStyle: { backgroundColor: colors.background },
         headerTitleStyle: { color: colors.text },
       }}
     >
-      <Tabs.Screen
-        name="events"
-        options={{
-          title: 'Events',
-          tabBarIcon: ({ color }) => <TabIcon label="📅" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="circles"
-        options={{
-          title: 'Circles',
-          tabBarIcon: ({ color }) => <TabIcon label="👥" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color }) => <TabIcon label="🙂" color={color} />,
-        }}
-      />
+      <Tabs.Screen name="events" options={{ title: 'Home', headerShown: false }} />
+      <Tabs.Screen name="circles" options={{ title: 'Circles', headerShown: false }} />
+      <Tabs.Screen name="map" options={{ title: 'Nearby', headerShown: false }} />
+      <Tabs.Screen name="profile" options={{ title: 'You', headerShown: false }} />
     </Tabs>
   );
 }

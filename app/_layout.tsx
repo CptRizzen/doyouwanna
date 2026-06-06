@@ -1,5 +1,5 @@
 import { QueryClientProvider } from '@tanstack/react-query';
-import { Slot, useRouter, useSegments } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
 import { ActivityIndicator, Platform, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -15,9 +15,6 @@ if (Platform.OS === 'web') {
   document.head.appendChild(link);
 }
 
-/**
- * Redirects between the (auth) group and the app based on session state.
- */
 function AuthGate() {
   const { session, loading } = useAuth();
   const segments = useSegments();
@@ -40,7 +37,14 @@ function AuthGate() {
       </View>
     );
   }
-  return <Slot />;
+
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(auth)" />
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="new-plan" options={{ presentation: 'modal', headerShown: false }} />
+    </Stack>
+  );
 }
 
 export default function RootLayout() {
